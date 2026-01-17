@@ -1,0 +1,17 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <h1>Dashboard</h1>
+      <p *ngIf="currentUser$ | async as user">
+        Bem-vindo, <strong>{{ user.name }}</strong
+        >!
+      </p>
+    </div>
+    <div *ngIf="currentUser$ | async as user">
+      <p><strong>Nome:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>ID:</strong> {{ user.id }}</p>
+    </div>
+    <button class="btn-logout" (click)="logout()">Sair</button>
+  </div>
+</div>
