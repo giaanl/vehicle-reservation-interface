@@ -1,0 +1,48 @@
+<div class="login-container">
+  <div class="login-content">
+    <h1 class="title">Bem-vindo</h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <input
+        type="email"
+        formControlName="email"
+        placeholder="Usuário"
+        [class.error]="email?.invalid && email?.touched"
+      />
+      <span class="error-message" *ngIf="email?.invalid && email?.touched">
+        {{ getErrorMessage('email') }}
+      </span>
+
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Senha"
+        [class.error]="password?.invalid && password?.touched"
+      />
+      <span class="error-message" *ngIf="password?.invalid && password?.touched">
+        {{ getErrorMessage('password') }}
+      </span>
+
+      <div class="error-message server-error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="isLoading"
+      >
+        {{ isLoading ? 'ENTRANDO...' : 'ENTRAR' }}
+      </button>
+
+      <a href="#" class="forgot-password">Esqueci minha senha</a>
+    </form>
+
+    <div class="footer">
+      <p>
+        Ainda não tem cadastro?
+        <a routerLink="/auth/register">Criar conta</a>
+      </p>
+    </div>
+  </div>
+</div>
