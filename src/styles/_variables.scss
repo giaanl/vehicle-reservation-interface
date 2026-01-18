@@ -1,0 +1,51 @@
+$red-primary: #C61D35;
+$dark-red-primary: #a61828;
+$bg-dark-primary: #1D2B3A;
+
+$text-white: #ffffff;
+$text-gray-light: #c1c2c5;
+$text-gray-medium: #a0aec0;
+$text-dark: #1a2332;
+
+$error-primary: #c92a2a;
+$error-light: #ffa8a8;
+$error-bg: #fff5f5;
+$error-bg-transparent: rgba(201, 42, 42, 0.1);
+$error-border: rgba(201, 42, 42, 0.3);
+
+$font-family-primary: 'Poppins', Roboto, sans-serif;
+
+$font-size-xs: 0.85rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 0.95rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.05rem;
+$font-size-xl: 1.75rem;
+$font-size-2xl: 2rem;
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$spacing-xs: 0.5rem;
+$spacing-sm: 0.75rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.25rem;
+$spacing-xl: 1.5rem;
+$spacing-2xl: 2rem;
+$spacing-3xl: 2.5rem;
+
+$radius-sm: 12px;
+$radius-md: 20px;
+$radius-lg: 25px;
+
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.2);
+
+$shadow-input-focus: 0 0 0 3px rgba(198, 29, 53, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+$shadow-error-focus: 0 0 0 3px rgba(201, 42, 42, 0.1);
+
+$breakpoint-sm: 428px;
+$breakpoint-md: 768px;

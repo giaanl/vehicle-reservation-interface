@@ -8,18 +8,18 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   return authService.authCheckComplete$.pipe(
-    filter(complete => complete === true),
+    filter((complete) => complete === true),
     take(1),
     switchMap(() => authService.isAuthenticated$),
     take(1),
-    map(isAuthenticated => {
+    map((isAuthenticated) => {
       if (isAuthenticated) {
         return true;
       }
 
       router.navigate(['/auth/login']);
       return false;
-    })
+    }),
   );
 };
 
@@ -28,17 +28,17 @@ export const noAuthGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   return authService.authCheckComplete$.pipe(
-    filter(complete => complete === true),
+    filter((complete) => complete === true),
     take(1),
     switchMap(() => authService.isAuthenticated$),
     take(1),
-    map(isAuthenticated => {
+    map((isAuthenticated) => {
       if (!isAuthenticated) {
         return true;
       }
 
       router.navigate(['/dashboard']);
       return false;
-    })
+    }),
   );
 };

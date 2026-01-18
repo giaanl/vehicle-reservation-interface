@@ -24,6 +24,8 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, vehicle-reservation-interface');
+    expect(compiled.querySelector('h1')?.textContent).toContain(
+      'Hello, vehicle-reservation-interface',
+    );
   });
 });

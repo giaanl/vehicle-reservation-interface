@@ -1,29 +1,41 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { AuthContainerComponent } from '../shared/auth-container/auth-container.component';
+import { LoadingService } from '../../../core/services/loading.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    AuthContainerComponent,
+  ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private loadingService = inject(LoadingService);
 
   loginForm: FormGroup;
-  isLoading = false;
   errorMessage = '';
 
   constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -41,18 +53,20 @@ export class LoginComponent {
       return;
     }
 
-    this.isLoading = true;
+    this.loadingService.show();
     this.errorMessage = '';
 
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-        this.isLoading = false;
+        this.loadingService.hide();
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = error.error?.message || 'Erro ao fazer login. Verifique suas credenciais.';
-      }
+        this.loadingService.hide();
+        this.errorMessage =
+          error.error?.message ||
+          'Erro ao fazer login. Verifique suas credenciais.';
+      },
     });
   }
 
