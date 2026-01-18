@@ -1,66 +1,65 @@
-<div class="register-container">
-  <div class="register-content">
-    <h1 class="title">Criar Conta</h1>
+<app-auth-container>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <input
+      type="text"
+      formControlName="name"
+      placeholder="Nome completo"
+      [class.error]="name?.invalid && name?.touched"
+    />
+    <span *ngIf="name?.invalid && name?.touched" class="error-message">
+      {{ getErrorMessage("name") }}
+    </span>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
-      <input
-        type="text"
-        formControlName="name"
-        placeholder="Nome completo"
-        [class.error]="name?.invalid && name?.touched"
-      />
-      <span class="error-message" *ngIf="name?.invalid && name?.touched">
-        {{ getErrorMessage('name') }}
-      </span>
+    <input
+      type="email"
+      formControlName="email"
+      placeholder="Email"
+      [class.error]="email?.invalid && email?.touched"
+    />
+    <span *ngIf="email?.invalid && email?.touched" class="error-message">
+      {{ getErrorMessage("email") }}
+    </span>
 
-      <input
-        type="email"
-        formControlName="email"
-        placeholder="Email"
-        [class.error]="email?.invalid && email?.touched"
-      />
-      <span class="error-message" *ngIf="email?.invalid && email?.touched">
-        {{ getErrorMessage('email') }}
-      </span>
+    <input
+      type="password"
+      formControlName="password"
+      placeholder="Senha"
+      [class.error]="password?.invalid && password?.touched"
+    />
+    <span *ngIf="password?.invalid && password?.touched" class="error-message">
+      {{ getErrorMessage("password") }}
+    </span>
 
-      <input
-        type="password"
-        formControlName="password"
-        placeholder="Senha"
-        [class.error]="password?.invalid && password?.touched"
-      />
-      <span class="error-message" *ngIf="password?.invalid && password?.touched">
-        {{ getErrorMessage('password') }}
-      </span>
+    <input
+      type="password"
+      formControlName="confirmPassword"
+      placeholder="Confirmar senha"
+      [class.error]="
+        (confirmPassword?.invalid && confirmPassword?.touched) ||
+        (registerForm.hasError('passwordMismatch') && confirmPassword?.touched)
+      "
+    />
+    <span
+      *ngIf="
+        (confirmPassword?.invalid && confirmPassword?.touched) ||
+        (registerForm.hasError('passwordMismatch') && confirmPassword?.touched)
+      "
+      class="error-message"
+    >
+      {{ getErrorMessage("confirmPassword") }}
+    </span>
 
-      <input
-        type="password"
-        formControlName="confirmPassword"
-        placeholder="Confirmar senha"
-        [class.error]="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.hasError('passwordMismatch') && confirmPassword?.touched)"
-      />
-      <span class="error-message" *ngIf="(confirmPassword?.invalid && confirmPassword?.touched) || (registerForm.hasError('passwordMismatch') && confirmPassword?.touched)">
-        {{ getErrorMessage('confirmPassword') }}
-      </span>
-
-      <div class="error-message server-error" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
-      <button
-        type="submit"
-        class="btn-submit"
-        [disabled]="isLoading"
-      >
-        {{ isLoading ? 'CRIANDO CONTA...' : 'CRIAR CONTA' }}
-      </button>
-    </form>
-
-    <div class="footer">
-      <p>
-        Já tem uma conta?
-        <a routerLink="/auth/login">Fazer login</a>
-      </p>
+    <div *ngIf="errorMessage" class="server-error">
+      {{ errorMessage }}
     </div>
+
+    <button type="submit" class="auth-btn-submit">Criar conta</button>
+  </form>
+
+  <div class="auth-footer">
+    <p>
+      Já tem uma conta?
+      <a routerLink="/auth/login">Fazer login</a>
+    </p>
   </div>
-</div>
+</app-auth-container>

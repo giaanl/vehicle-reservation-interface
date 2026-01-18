@@ -11,7 +11,11 @@ import {
   throwError,
 } from 'rxjs';
 import { User } from '../models/user.model';
-import { LoginRequest, AuthResponse, RegisterRequest } from '../../features/auth/models/auth.model';
+import {
+  LoginRequest,
+  AuthResponse,
+  RegisterRequest,
+} from '../../features/auth/models/auth.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
