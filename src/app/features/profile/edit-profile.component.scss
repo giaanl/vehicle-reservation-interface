@@ -1,0 +1,435 @@
+@import '../../../styles/variables';
+
+.profile-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-top: 70px;
+}
+
+.main-content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: $radius-sm;
+  padding: $spacing-sm $spacing-md;
+  color: $text-dark;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: $spacing-xl;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+  }
+}
+
+.profile-content {
+  background: white;
+  border-radius: $radius-md;
+  padding: $spacing-2xl;
+  box-shadow: $shadow-sm;
+}
+
+.page-title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $text-dark;
+  margin: 0 0 $spacing-2xl 0;
+  text-align: center;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.avatar-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: $spacing-md;
+
+  .avatar-circle {
+    width: 100px;
+    height: 100px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #e2e8f0;
+
+    svg {
+      width: 50px;
+      height: 50px;
+      color: $text-gray-medium;
+    }
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+
+  label {
+    color: $text-dark;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    padding-left: $spacing-xs;
+  }
+
+  input {
+    width: 100%;
+    padding: 14px $spacing-md;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: $radius-sm;
+    font-size: $font-size-base;
+    font-family: $font-family-primary;
+    color: $text-dark;
+    transition: all 0.2s;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $text-gray-medium;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $red-primary;
+      box-shadow: $shadow-input-focus;
+    }
+
+    &.error {
+      border-color: $error-primary;
+      background: $error-bg;
+    }
+  }
+
+  .error-message {
+    color: $error-primary;
+    font-size: $font-size-xs;
+    padding-left: $spacing-md;
+  }
+}
+
+.password-section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-lg;
+  background: #f8fafc;
+  border-radius: $radius-sm;
+  border: 1px solid #e2e8f0;
+
+  .toggle-password-btn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    background: transparent;
+    border: none;
+    color: $red-primary;
+    font-size: $font-size-base;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    padding: $spacing-sm;
+    border-radius: $radius-sm;
+    transition: all 0.2s;
+    text-align: left;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background: rgba(198, 29, 53, 0.05);
+    }
+  }
+
+  .password-fields {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    padding-top: $spacing-sm;
+    animation: slideDown 0.3s ease;
+  }
+}
+
+.server-error {
+  background: $error-bg;
+  color: $error-primary;
+  padding: $spacing-md;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  text-align: center;
+  border: 1px solid $error-border;
+}
+
+.success-message {
+  background: #f0fdf4;
+  color: #16a34a;
+  padding: $spacing-md;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  text-align: center;
+  border: 1px solid #bbf7d0;
+}
+
+.save-button {
+  width: 100%;
+  padding: 14px $spacing-md;
+  background: $red-primary;
+  color: $text-white;
+  border: none;
+  border-radius: $radius-sm;
+  font-size: $font-size-md;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+
+  &:hover:not(:disabled) {
+    background: $dark-red-primary;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.delete-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  color: #dc2626;
+  font-size: $font-size-sm;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    color: #b91c1c;
+    text-decoration: underline;
+  }
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $spacing-md;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: white;
+  border-radius: $radius-md;
+  padding: $spacing-2xl;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: $shadow-lg;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  .warning-icon {
+    width: 60px;
+    height: 60px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 32px;
+      height: 32px;
+      color: #dc2626;
+    }
+  }
+
+  h2 {
+    color: $text-dark;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    margin: 0;
+  }
+}
+
+.modal-body {
+  margin-bottom: $spacing-xl;
+
+  p {
+    color: $text-dark;
+    font-size: $font-size-base;
+    line-height: 1.6;
+    text-align: center;
+    margin: 0;
+
+    strong {
+      color: #dc2626;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: $spacing-md;
+
+  button {
+    flex: 1;
+    padding: $spacing-md;
+    border: none;
+    border-radius: $radius-sm;
+    font-size: $font-size-md;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cancel-button {
+    background: #f1f5f9;
+    color: $text-dark;
+
+    &:hover {
+      background: #e2e8f0;
+    }
+  }
+
+  .confirm-delete-button {
+    background: #dc2626;
+    color: $text-white;
+
+    &:hover {
+      background: #b91c1c;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-sm) {
+  .main-content {
+    padding: $spacing-md;
+  }
+
+  .profile-content {
+    padding: $spacing-xl;
+  }
+
+  .page-title {
+    font-size: $font-size-lg;
+  }
+
+  .avatar-section {
+    .avatar-circle {
+      width: 80px;
+      height: 80px;
+
+      svg {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  }
+
+  .modal-content {
+    padding: $spacing-xl;
+  }
+}
+
+@media (min-width: $breakpoint-md) {
+  .profile-content {
+    padding: $spacing-3xl;
+  }
+
+  .form-group {
+    input {
+      padding: 16px $spacing-lg;
+    }
+  }
+
+  .save-button {
+    padding: 16px $spacing-lg;
+  }
+}

@@ -1,0 +1,8 @@
+<div class="app-header">
+  <h2 class="user-greeting" *ngIf="userName">Olá, {{ userName }}</h2>
+
+  <app-user-menu
+    (editProfile)="onEditProfile()"
+    (logout)="onLogout()"
+  ></app-user-menu>
+</div>

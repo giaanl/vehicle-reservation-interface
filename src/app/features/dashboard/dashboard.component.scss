@@ -1,61 +1,120 @@
+@import '../../../styles/variables';
+
 .dashboard-container {
   min-height: 100vh;
-  background: black;
-  padding: 2rem;
+  background: #f5f5f5;
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  padding: 1.5rem 2rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+}
 
-  .welcome-section {
-    h1 {
-      font-size: 2rem;
-      color: #1a202c;
-      margin-bottom: 0.5rem;
+.search-section {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  .search-input-wrapper {
+    flex: 1;
+    position: relative;
+
+    .search-icon {
+      position: absolute;
+      left: $spacing-md;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: $red-primary;
     }
 
-    p {
-      color: black;
-      font-size: 1rem;
+    .search-input {
+      width: 100%;
+      padding: 14px $spacing-md 14px 48px;
+      border: 1px solid #e2e8f0;
+      border-radius: $radius-sm;
+      font-size: $font-size-base;
+      outline: none;
+      transition: all 0.2s;
+
+      &:focus {
+        border-color: $red-primary;
+        box-shadow: $shadow-input-focus;
+      }
+
+      &::placeholder {
+        color: $text-gray-medium;
+      }
     }
   }
 
-  .btn-logout {
-    background: red;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
+  .filter-button {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: 14px $spacing-lg;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: $radius-sm;
+    color: $text-dark;
+    font-weight: $font-weight-medium;
     cursor: pointer;
     transition: all 0.2s;
 
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+      background: #f7fafc;
+      border-color: #cbd5e0;
     }
   }
 }
 
-@media (max-width: 768px) {
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+.reservations-section {
+  margin-bottom: $spacing-xl;
 
-    .welcome-section h1 {
-      font-size: 1.5rem;
-    }
+  .section-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $text-dark;
+    margin-bottom: $spacing-md;
   }
 
+  .reservations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $spacing-md;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .main-content {
+    padding: $spacing-md;
+  }
+
+  .reservations-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .search-section {
+    flex-direction: column;
+
+    .filter-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+@media (min-width: 769px) {
   .dashboard-container {
-    padding: 1rem;
+    padding-bottom: $spacing-xl;
   }
 }
