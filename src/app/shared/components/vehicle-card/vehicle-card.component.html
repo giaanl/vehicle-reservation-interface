@@ -1,0 +1,16 @@
+<div class="vehicle-card" (click)="onCardClick()">
+  <div class="car-image">
+    <img
+      *ngIf="vehicle.imageUrl"
+      [src]="vehicle.imageUrl"
+      [alt]="vehicle.name"
+      (error)="onImageError($event)"
+    />
+  </div>
+  <div class="car-details">
+    <h4 class="car-name">{{ vehicle.name }} - {{ vehicle.year }}</h4>
+    <p>{{ vehicle.type }}</p>
+    <p>Motor {{ vehicle.engine }}</p>
+    <p>{{ vehicle.size }} Lugares</p>
+  </div>
+</div>

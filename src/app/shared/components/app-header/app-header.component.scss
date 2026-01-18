@@ -1,0 +1,34 @@
+@import '../../../../styles/variables';
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: $bg-dark-primary;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 $spacing-xl;
+  box-shadow: $shadow-md;
+  z-index: 100;
+
+  .user-greeting {
+    color: $text-white;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .app-header {
+    padding: 0 $spacing-md;
+
+    .user-greeting {
+      font-size: $font-size-sm;
+    }
+  }
+}
