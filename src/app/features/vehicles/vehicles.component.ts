@@ -1,4 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  signal,
+  computed,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -45,30 +54,32 @@ import {
   ],
   templateUrl: './vehicles.component.html',
   styleUrl: './vehicles.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VehiclesComponent implements OnInit {
   private vehicleService = inject(VehicleService);
   private loadingService = inject(LoadingService);
+  private destroyRef = inject(DestroyRef);
 
-  vehicles: Vehicle[] = [];
-  showModal = false;
-  showFilterModal = false;
-  selectedVehicle: Vehicle | null = null;
-  errorMessage = '';
-  searchQuery = '';
-
-  filters: FilterValues = {
+  vehicles = signal<Vehicle[]>([]);
+  showModal = signal(false);
+  showFilterModal = signal(false);
+  selectedVehicle = signal<Vehicle | null>(null);
+  errorMessage = signal('');
+  searchQuery = signal('');
+  filters = signal<FilterValues>({
     types: {},
     engine: '',
     size: null,
     status: 'all',
-  };
+  });
 
-  get filteredVehicles(): Vehicle[] {
-    let result = this.vehicles;
+  filteredVehicles = computed(() => {
+    let result = this.vehicles();
+    const query = this.searchQuery().trim().toLowerCase();
+    const currentFilters = this.filters();
 
-    if (this.searchQuery.trim()) {
-      const query = this.searchQuery.toLowerCase();
+    if (query) {
       result = result.filter(
         (v) =>
           v.name.toLowerCase().includes(query) ||
@@ -76,7 +87,7 @@ export class VehiclesComponent implements OnInit {
       );
     }
 
-    const selectedTypes = Object.entries(this.filters.types)
+    const selectedTypes = Object.entries(currentFilters.types)
       .filter(([_, selected]) => selected)
       .map(([key]) => key);
 
@@ -87,23 +98,23 @@ export class VehiclesComponent implements OnInit {
       });
     }
 
-    if (this.filters.engine) {
-      result = result.filter((v) => v.engine === this.filters.engine);
+    if (currentFilters.engine) {
+      result = result.filter((v) => v.engine === currentFilters.engine);
     }
 
-    if (this.filters.size !== null) {
-      result = result.filter((v) => v.size === this.filters.size);
+    if (currentFilters.size !== null) {
+      result = result.filter((v) => v.size === currentFilters.size);
     }
 
     return result;
-  }
+  });
 
-  get vehiclesWithImage(): (Vehicle & { imageUrl?: string | null })[] {
-    return this.filteredVehicles.map((v) => ({
+  vehiclesWithImage = computed(() => {
+    return this.filteredVehicles().map((v) => ({
       ...v,
       imageUrl: this.getVehicleImageUrl(v.name),
     }));
-  }
+  });
 
   ngOnInit(): void {
     this.loadVehicles();
@@ -111,81 +122,96 @@ export class VehiclesComponent implements OnInit {
 
   loadVehicles(): void {
     this.loadingService.show();
-    this.vehicleService.getAll().subscribe({
-      next: (resp) => {
-        this.vehicles = resp.data ?? [];
-        this.loadingService.hide();
-      },
-      error: (error) => {
-        this.errorMessage = error.error?.message || 'Erro ao carregar veículos';
-        this.loadingService.hide();
-      },
-    });
+    this.vehicleService
+      .getAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (resp) => {
+          this.vehicles.set(resp.data ?? []);
+          this.loadingService.hide();
+        },
+        error: (error) => {
+          this.errorMessage.set(
+            error.error?.message || 'Erro ao carregar veículos',
+          );
+          this.loadingService.hide();
+        },
+      });
   }
 
   toggleFilterModal(): void {
-    this.showFilterModal = !this.showFilterModal;
+    this.showFilterModal.update((v) => !v);
   }
 
   applyFilters(filters: FilterValues): void {
-    this.filters = filters;
-    this.showFilterModal = false;
-    this.loadVehicles();
+    this.filters.set(filters);
+    this.showFilterModal.set(false);
   }
 
   clearFilters(): void {
-    this.filters = {
+    this.filters.set({
       types: {},
       engine: '',
       size: null,
       status: 'all',
-    };
-    this.loadVehicles();
+    });
+  }
+
+  onSearchChange(query: string): void {
+    this.searchQuery.set(query);
   }
 
   openCreateModal(): void {
-    this.selectedVehicle = null;
-    this.showModal = true;
+    this.selectedVehicle.set(null);
+    this.showModal.set(true);
   }
 
   openEditModal(vehicle: Vehicle): void {
-    this.selectedVehicle = vehicle;
-    this.showModal = true;
+    this.selectedVehicle.set(vehicle);
+    this.showModal.set(true);
   }
 
   closeModal(): void {
-    this.showModal = false;
-    this.selectedVehicle = null;
+    this.showModal.set(false);
+    this.selectedVehicle.set(null);
   }
 
   onSaveVehicle(data: CreateVehicleRequest | UpdateVehicleRequest): void {
     this.loadingService.show();
+    const currentVehicle = this.selectedVehicle();
 
-    if (this.selectedVehicle) {
+    if (currentVehicle) {
       this.vehicleService
-        .update(this.selectedVehicle.id, data as UpdateVehicleRequest)
+        .update(currentVehicle.id, data as UpdateVehicleRequest)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.closeModal();
             this.loadVehicles();
           },
           error: (error) => {
-            this.errorMessage =
-              error.error?.message || 'Erro ao atualizar veículo';
+            this.errorMessage.set(
+              error.error?.message || 'Erro ao atualizar veículo',
+            );
             this.loadingService.hide();
           },
         });
     } else {
-      this.vehicleService.create(data as CreateVehicleRequest).subscribe({
-        next: () => {
-          this.closeModal();
-          this.loadVehicles();
-        },
-        error: (error) => {
-          this.errorMessage = error.error?.message || 'Erro ao criar veículo';
-          this.loadingService.hide();
-        },
-      });
+      this.vehicleService
+        .create(data as CreateVehicleRequest)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.closeModal();
+            this.loadVehicles();
+          },
+          error: (error) => {
+            this.errorMessage.set(
+              error.error?.message || 'Erro ao criar veículo',
+            );
+            this.loadingService.hide();
+          },
+        });
     }
   }
 
@@ -194,15 +220,20 @@ export class VehiclesComponent implements OnInit {
       return;
 
     this.loadingService.show();
-    this.vehicleService.delete(vehicle.id).subscribe({
-      next: () => {
-        this.loadVehicles();
-      },
-      error: (error) => {
-        this.errorMessage = error.error?.message || 'Erro ao excluir veículo';
-        this.loadingService.hide();
-      },
-    });
+    this.vehicleService
+      .delete(vehicle.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadVehicles();
+        },
+        error: (error) => {
+          this.errorMessage.set(
+            error.error?.message || 'Erro ao excluir veículo',
+          );
+          this.loadingService.hide();
+        },
+      });
   }
 
   getStatusLabel(status?: string): string {
@@ -213,7 +244,7 @@ export class VehiclesComponent implements OnInit {
     return status === 'reserved' ? 'status-reserved' : 'status-available';
   }
 
-  private availableImages = [
+  private readonly availableImages = [
     'chevrolet_camaro',
     'fiat_doblo',
     'fiat_fiorino',
@@ -228,7 +259,7 @@ export class VehiclesComponent implements OnInit {
     'vw_tcross',
   ];
 
-  private modelToImage: Record<string, string> = {
+  private readonly modelToImage: Record<string, string> = {
     camaro: 'chevrolet_camaro',
     doblo: 'fiat_doblo',
     fiorino: 'fiat_fiorino',

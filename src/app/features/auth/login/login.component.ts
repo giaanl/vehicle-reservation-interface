@@ -1,4 +1,11 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -22,15 +29,17 @@ import { LoadingService } from '../../../core/services/loading.service';
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
   private loadingService = inject(LoadingService);
+  private destroyRef = inject(DestroyRef);
 
   loginForm: FormGroup;
-  errorMessage = '';
+  errorMessage = signal('');
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -54,20 +63,24 @@ export class LoginComponent {
     }
 
     this.loadingService.show();
-    this.errorMessage = '';
+    this.errorMessage.set('');
 
-    this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.loadingService.hide();
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        this.loadingService.hide();
-        this.errorMessage =
-          error.error?.message ||
-          'Erro ao fazer login. Verifique suas credenciais.';
-      },
-    });
+    this.authService
+      .login(this.loginForm.value)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadingService.hide();
+          this.router.navigate(['/reservations']);
+        },
+        error: (error) => {
+          this.loadingService.hide();
+          this.errorMessage.set(
+            error.error?.message ||
+              'Erro ao fazer login. Verifique suas credenciais.',
+          );
+        },
+      });
   }
 
   getErrorMessage(fieldName: string): string {

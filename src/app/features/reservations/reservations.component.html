@@ -7,7 +7,8 @@
           type="text"
           class="search-input"
           placeholder="Buscar reserva"
-          [(ngModel)]="searchQuery"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchChange($event)"
         />
       </div>
       <button class="filter-button" (click)="toggleFilterModal()">
@@ -20,10 +21,12 @@
       </button>
     </div>
 
-    <div class="error-message" *ngIf="errorMessage">
-      {{ errorMessage }}
-      <button class="dismiss-error" (click)="errorMessage = ''">×</button>
-    </div>
+    @if (errorMessage()) {
+      <div class="error-message">
+        {{ errorMessage() }}
+        <button class="dismiss-error" (click)="errorMessage.set('')">×</button>
+      </div>
+    }
 
     <div class="reservations-section">
       <h3 class="section-title">Últimas reservas</h3>
@@ -38,8 +41,8 @@
 </app-main-layout>
 
 <app-filter-modal
-  [show]="showFilterModal"
-  [filters]="filters"
+  [show]="showFilterModal()"
+  [filters]="filters()"
   [showStatusFilter]="true"
   (close)="toggleFilterModal()"
   (apply)="applyFilters($event)"

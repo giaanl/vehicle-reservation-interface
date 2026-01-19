@@ -7,7 +7,8 @@
           type="text"
           class="search-input"
           placeholder="Buscar veículo"
-          [(ngModel)]="searchQuery"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchChange($event)"
         />
       </div>
       <button class="filter-button" (click)="toggleFilterModal()">
@@ -20,39 +21,42 @@
       </button>
     </div>
 
-    <div class="error-message" *ngIf="errorMessage">
-      {{ errorMessage }}
-      <button class="dismiss-error" (click)="errorMessage = ''">×</button>
-    </div>
+    @if (errorMessage()) {
+      <div class="error-message">
+        {{ errorMessage() }}
+        <button class="dismiss-error" (click)="errorMessage.set('')">×</button>
+      </div>
+    }
 
     <div class="vehicles-section">
       <h3 class="section-title">Lista de veículos</h3>
       <div class="reservations-grid">
-        <app-vehicle-card
-          *ngFor="let vehicle of vehiclesWithImage"
-          [vehicle]="vehicle"
-        />
+        @for (vehicle of vehiclesWithImage(); track vehicle.id) {
+          <app-vehicle-card [vehicle]="vehicle" />
+        }
       </div>
 
-      <div class="empty-state" *ngIf="vehiclesWithImage.length === 0">
-        <ng-icon name="heroTruck" />
-        <h3>Nenhum veículo encontrado</h3>
-        <p>Adicione seu primeiro veículo clicando no botão acima.</p>
-      </div>
+      @if (vehiclesWithImage().length === 0) {
+        <div class="empty-state">
+          <ng-icon name="heroTruck" />
+          <h3>Nenhum veículo encontrado</h3>
+          <p>Adicione seu primeiro veículo clicando no botão acima.</p>
+        </div>
+      }
     </div>
   </div>
 </app-main-layout>
 
 <app-vehicle-modal
-  [show]="showModal"
-  [vehicle]="selectedVehicle"
+  [show]="showModal()"
+  [vehicle]="selectedVehicle()"
   (close)="closeModal()"
   (save)="onSaveVehicle($event)"
 />
 
 <app-filter-modal
-  [show]="showFilterModal"
-  [filters]="filters"
+  [show]="showFilterModal()"
+  [filters]="filters()"
   [showStatusFilter]="true"
   (close)="toggleFilterModal()"
   (apply)="applyFilters($event)"

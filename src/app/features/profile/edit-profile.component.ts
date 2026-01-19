@@ -1,4 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -8,20 +16,41 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronLeft, heroUser, heroKey, heroTrash, heroExclamationTriangle } from '@ng-icons/heroicons/outline';
+import {
+  heroChevronLeft,
+  heroUser,
+  heroKey,
+  heroTrash,
+  heroExclamationTriangle,
+} from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { User } from '../../core/models/user.model';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppHeaderComponent, NgIconComponent],
-  providers: [provideIcons({ heroChevronLeft, heroUser, heroKey, heroTrash, heroExclamationTriangle })],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    AppHeaderComponent,
+    NgIconComponent,
+  ],
+  providers: [
+    provideIcons({
+      heroChevronLeft,
+      heroUser,
+      heroKey,
+      heroTrash,
+      heroExclamationTriangle,
+    }),
+  ],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditProfileComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -29,13 +58,14 @@ export class EditProfileComponent implements OnInit {
   private userService = inject(UserService);
   private loadingService = inject(LoadingService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   profileForm!: FormGroup;
   currentUser: User | null = null;
-  errorMessage = '';
-  successMessage = '';
-  showDeleteModal = false;
-  showPasswordFields = false;
+  errorMessage = signal('');
+  successMessage = signal('');
+  showDeleteModal = signal(false);
+  showPasswordFields = signal(false);
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
@@ -58,9 +88,9 @@ export class EditProfileComponent implements OnInit {
   }
 
   togglePasswordFields(): void {
-    this.showPasswordFields = !this.showPasswordFields;
+    this.showPasswordFields.update((v) => !v);
 
-    if (!this.showPasswordFields) {
+    if (!this.showPasswordFields()) {
       this.profileForm.patchValue({
         currentPassword: '',
         newPassword: '',
@@ -119,92 +149,105 @@ export class EditProfileComponent implements OnInit {
     const { name, email, currentPassword, newPassword, confirmPassword } =
       this.profileForm.value;
 
-    if (this.showPasswordFields) {
+    if (this.showPasswordFields()) {
       if (!currentPassword) {
-        this.errorMessage = 'Senha atual é obrigatória para alteração de senha';
+        this.errorMessage.set('Senha atual é obrigatória para alteração de senha');
         return;
       }
       if (newPassword !== confirmPassword) {
-        this.errorMessage = 'As senhas não coincidem';
+        this.errorMessage.set('As senhas não coincidem');
         return;
       }
     }
 
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage.set('');
+    this.successMessage.set('');
     this.loadingService.show();
 
-    const updateData: any = { name, email };
+    const updateData: { name: string; email: string; password?: string } = {
+      name,
+      email,
+    };
 
-    if (this.showPasswordFields && newPassword) {
+    if (this.showPasswordFields() && newPassword) {
       updateData.password = newPassword;
     }
 
-    this.userService.updateProfile(updateData).subscribe({
-      next: (user) => {
-        this.loadingService.hide();
-        this.successMessage = 'Perfil atualizado com sucesso!';
-        this.showPasswordFields = false;
-        this.profileForm.patchValue({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: '',
-        });
-        setTimeout(() => (this.successMessage = ''), 5000);
-      },
-      error: (error) => {
-        this.loadingService.hide();
-        this.errorMessage =
-          error.error?.message || 'Erro ao atualizar perfil. Tente novamente.';
-      },
-    });
+    this.userService
+      .updateProfile(updateData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadingService.hide();
+          this.successMessage.set('Perfil atualizado com sucesso!');
+          this.showPasswordFields.set(false);
+          this.profileForm.patchValue({
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+          });
+          setTimeout(() => this.successMessage.set(''), 5000);
+        },
+        error: (error) => {
+          this.loadingService.hide();
+          this.errorMessage.set(
+            error.error?.message || 'Erro ao atualizar perfil. Tente novamente.',
+          );
+        },
+      });
   }
 
   openDeleteModal(): void {
-    this.showDeleteModal = true;
+    this.showDeleteModal.set(true);
   }
 
   closeDeleteModal(): void {
-    this.showDeleteModal = false;
+    this.showDeleteModal.set(false);
   }
 
   confirmDelete(): void {
     this.loadingService.show();
-    this.userService.deleteAccount().subscribe({
-      next: () => {
-        this.authService.logout().subscribe({
-          next: () => {
-            this.loadingService.hide();
-            this.router.navigate(['/auth/login']);
-          },
-          error: () => {},
-        });
-      },
-      error: (error) => {
-        this.loadingService.hide();
-        this.errorMessage =
-          error.error?.message || 'Erro ao excluir conta. Tente novamente.';
-        this.closeDeleteModal();
-      },
-    });
+    this.userService
+      .deleteAccount()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        switchMap(() => this.authService.logout()),
+      )
+      .subscribe({
+        next: () => {
+          this.loadingService.hide();
+          this.router.navigate(['/auth/login']);
+        },
+        error: (error) => {
+          this.loadingService.hide();
+          this.errorMessage.set(
+            error.error?.message || 'Erro ao excluir conta. Tente novamente.',
+          );
+          this.closeDeleteModal();
+        },
+      });
   }
 
   goBack(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/reservations']);
   }
 
   logout(): void {
     this.loadingService.show();
-    this.authService.logout().subscribe({
-      next: () => {
-        this.loadingService.hide();
-        this.router.navigate(['/auth/login']);
-      },
-      error: (error) => {
-        this.loadingService.hide();
-        this.errorMessage =
-          error.error?.message || 'Erro ao realizar o logout. Tente novamente.';
-      },
-    });
+    this.authService
+      .logout()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadingService.hide();
+          this.router.navigate(['/auth/login']);
+        },
+        error: (error) => {
+          this.loadingService.hide();
+          this.errorMessage.set(
+            error.error?.message || 'Erro ao realizar o logout. Tente novamente.',
+          );
+        },
+      });
   }
 }
