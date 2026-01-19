@@ -1,4 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -10,9 +15,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { MainLayoutComponent } from '../../shared/components/main-layout/main-layout.component';
 import { FilterModalComponent, FilterValues } from '../../shared/components';
-import { VehicleService } from '../../core/services/vehicle.service';
 import { Reservation } from '../../core/models/reservation.model';
-import { Vehicle } from '../../core/models/vehicle.model';
 
 @Component({
   selector: 'app-reservations',
@@ -34,19 +37,17 @@ import { Vehicle } from '../../core/models/vehicle.model';
   ],
   templateUrl: './reservations.component.html',
   styleUrl: './reservations.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReservationsComponent {
-  private vehicleService = inject(VehicleService);
+  reservations = signal<Reservation[]>([]);
+  showModal = signal(false);
+  showFilterModal = signal(false);
+  selectedReservation = signal<Reservation | null>(null);
+  errorMessage = signal('');
+  searchQuery = signal('');
 
-  reservations: Reservation[] = [];
-  vehicles: Vehicle[] = [];
-  showModal = false;
-  showFilterModal = false;
-  selectedReservation: Reservation | null = null;
-  errorMessage = '';
-  searchQuery = '';
-
-  filters: FilterValues = {
+  filters = signal<FilterValues>({
     types: {
       hatchCompact: false,
       pickupMid: false,
@@ -67,35 +68,26 @@ export class ReservationsComponent {
     },
     engine: '',
     size: null,
-  };
+  });
 
-  get filteredReservations(): Reservation[] {
-    if (!this.searchQuery.trim()) {
-      return this.reservations;
+  filteredReservations = computed(() => {
+    const query = this.searchQuery().trim().toLowerCase();
+    if (!query) {
+      return this.reservations();
     }
-    const query = this.searchQuery.toLowerCase();
-    return this.reservations.filter(
+    return this.reservations().filter(
       (r) =>
         r.vehicle?.name?.toLowerCase().includes(query) ||
         r.vehicle?.type?.toLowerCase().includes(query),
     );
-  }
-
-  loadVehicles(): void {
-    this.vehicleService.getAll().subscribe({
-      next: (resp) => {
-        this.vehicles = resp.data;
-      },
-      error: () => {},
-    });
-  }
+  });
 
   toggleFilterModal(): void {
-    this.showFilterModal = !this.showFilterModal;
+    this.showFilterModal.update((v) => !v);
   }
 
   clearFilters(): void {
-    this.filters = {
+    this.filters.set({
       types: {
         hatchCompact: false,
         pickupMid: false,
@@ -116,21 +108,25 @@ export class ReservationsComponent {
       },
       engine: '',
       size: null,
-    };
+    });
   }
 
   applyFilters(filters: FilterValues): void {
-    this.filters = filters;
+    this.filters.set(filters);
     this.toggleFilterModal();
   }
 
+  onSearchChange(query: string): void {
+    this.searchQuery.set(query);
+  }
+
   openCreateModal(): void {
-    this.selectedReservation = null;
-    this.showModal = true;
+    this.selectedReservation.set(null);
+    this.showModal.set(true);
   }
 
   closeModal(): void {
-    this.showModal = false;
-    this.selectedReservation = null;
+    this.showModal.set(false);
+    this.selectedReservation.set(null);
   }
 }

@@ -1,4 +1,10 @@
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  DestroyRef,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AppHeaderComponent } from '../app-header/app-header.component';
@@ -18,11 +24,13 @@ import { LoadingService } from '../../../core/services/loading.service';
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayoutComponent {
   private authService = inject(AuthService);
   private loadingService = inject(LoadingService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   currentUser$ = this.authService.currentUser$;
 
@@ -32,15 +40,18 @@ export class MainLayoutComponent {
 
   logout(): void {
     this.loadingService.show();
-    this.authService.logout().subscribe({
-      next: () => {
-        this.loadingService.hide();
-        this.router.navigate(['/auth/login']);
-      },
-      error: () => {
-        this.loadingService.hide();
-        this.router.navigate(['/auth/login']);
-      },
-    });
+    this.authService
+      .logout()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadingService.hide();
+          this.router.navigate(['/auth/login']);
+        },
+        error: () => {
+          this.loadingService.hide();
+          this.router.navigate(['/auth/login']);
+        },
+      });
   }
 }

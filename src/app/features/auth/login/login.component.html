@@ -6,9 +6,11 @@
       placeholder="Usuário"
       [class.error]="email?.invalid && email?.touched"
     />
-    <span *ngIf="email?.invalid && email?.touched" class="error-message">
-      {{ getErrorMessage("email") }}
-    </span>
+    @if (email?.invalid && email?.touched) {
+      <span class="error-message">
+        {{ getErrorMessage("email") }}
+      </span>
+    }
 
     <input
       type="password"
@@ -16,13 +18,17 @@
       placeholder="Senha"
       [class.error]="password?.invalid && password?.touched"
     />
-    <span *ngIf="password?.invalid && password?.touched" class="error-message">
-      {{ getErrorMessage("password") }}
-    </span>
+    @if (password?.invalid && password?.touched) {
+      <span class="error-message">
+        {{ getErrorMessage("password") }}
+      </span>
+    }
 
-    <div *ngIf="errorMessage" class="server-error">
-      {{ errorMessage }}
-    </div>
+    @if (errorMessage()) {
+      <div class="server-error">
+        {{ errorMessage() }}
+      </div>
+    }
 
     <button type="submit" class="auth-btn-submit">Entrar</button>
 

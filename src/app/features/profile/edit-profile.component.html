@@ -30,7 +30,9 @@
             placeholder="Digite seu nome"
             [class.error]="nameError"
           />
-          <span *ngIf="nameError" class="error-message">{{ nameError }}</span>
+          @if (nameError) {
+            <span class="error-message">{{ nameError }}</span>
+          }
         </div>
 
         <div class="form-group">
@@ -42,7 +44,9 @@
             placeholder="Digite seu email"
             [class.error]="emailError"
           />
-          <span *ngIf="emailError" class="error-message">{{ emailError }}</span>
+          @if (emailError) {
+            <span class="error-message">{{ emailError }}</span>
+          }
         </div>
 
         <div class="password-section">
@@ -53,57 +57,63 @@
           >
             <ng-icon name="heroKey" />
             {{
-              showPasswordFields
+              showPasswordFields()
                 ? "Cancelar alteração de senha"
                 : "Alterar senha"
             }}
           </button>
 
-          <div *ngIf="showPasswordFields" class="password-fields">
-            <div class="form-group">
-              <label for="currentPassword">Senha atual</label>
-              <input
-                id="currentPassword"
-                type="password"
-                formControlName="currentPassword"
-                placeholder="Digite sua senha atual"
-              />
-            </div>
+          @if (showPasswordFields()) {
+            <div class="password-fields">
+              <div class="form-group">
+                <label for="currentPassword">Senha atual</label>
+                <input
+                  id="currentPassword"
+                  type="password"
+                  formControlName="currentPassword"
+                  placeholder="Digite sua senha atual"
+                />
+              </div>
 
-            <div class="form-group">
-              <label for="newPassword">Nova senha</label>
-              <input
-                id="newPassword"
-                type="password"
-                formControlName="newPassword"
-                placeholder="Digite sua nova senha"
-                [class.error]="passwordError"
-              />
-            </div>
+              <div class="form-group">
+                <label for="newPassword">Nova senha</label>
+                <input
+                  id="newPassword"
+                  type="password"
+                  formControlName="newPassword"
+                  placeholder="Digite sua nova senha"
+                  [class.error]="passwordError"
+                />
+              </div>
 
-            <div class="form-group">
-              <label for="confirmPassword">Confirmar nova senha</label>
-              <input
-                id="confirmPassword"
-                type="password"
-                formControlName="confirmPassword"
-                placeholder="Confirme sua nova senha"
-                [class.error]="passwordError"
-              />
-              <span *ngIf="passwordError" class="error-message">{{
-                passwordError
-              }}</span>
+              <div class="form-group">
+                <label for="confirmPassword">Confirmar nova senha</label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  formControlName="confirmPassword"
+                  placeholder="Confirme sua nova senha"
+                  [class.error]="passwordError"
+                />
+                @if (passwordError) {
+                  <span class="error-message">{{ passwordError }}</span>
+                }
+              </div>
             </div>
+          }
+        </div>
+
+        @if (errorMessage()) {
+          <div class="server-error">
+            {{ errorMessage() }}
           </div>
-        </div>
+        }
 
-        <div *ngIf="errorMessage" class="server-error">
-          {{ errorMessage }}
-        </div>
-
-        <div *ngIf="successMessage" class="success-message">
-          {{ successMessage }}
-        </div>
+        @if (successMessage()) {
+          <div class="success-message">
+            {{ successMessage() }}
+          </div>
+        }
 
         <button
           type="submit"
@@ -122,30 +132,32 @@
   </div>
 </div>
 
-<div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="warning-icon">
-        <ng-icon name="heroExclamationTriangle" />
+@if (showDeleteModal()) {
+  <div class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="warning-icon">
+          <ng-icon name="heroExclamationTriangle" />
+        </div>
+        <h2>Excluir conta</h2>
       </div>
-      <h2>Excluir conta</h2>
-    </div>
 
-    <div class="modal-body">
-      <p>
-        Tem certeza que deseja excluir sua conta? Esta ação é
-        <strong>irreversível</strong> e todos os seus dados serão
-        permanentemente removidos.
-      </p>
-    </div>
+      <div class="modal-body">
+        <p>
+          Tem certeza que deseja excluir sua conta? Esta ação é
+          <strong>irreversível</strong> e todos os seus dados serão
+          permanentemente removidos.
+        </p>
+      </div>
 
-    <div class="modal-actions">
-      <button class="cancel-button" (click)="closeDeleteModal()">
-        Cancelar
-      </button>
-      <button class="confirm-delete-button" (click)="confirmDelete()">
-        Sim, excluir conta
-      </button>
+      <div class="modal-actions">
+        <button class="cancel-button" (click)="closeDeleteModal()">
+          Cancelar
+        </button>
+        <button class="confirm-delete-button" (click)="confirmDelete()">
+          Sim, excluir conta
+        </button>
+      </div>
     </div>
   </div>
-</div>
+}
