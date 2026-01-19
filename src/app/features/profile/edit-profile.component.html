@@ -132,32 +132,15 @@
   </div>
 </div>
 
-@if (showDeleteModal()) {
-  <div class="modal-overlay" (click)="closeDeleteModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div class="warning-icon">
-          <ng-icon name="heroExclamationTriangle" />
-        </div>
-        <h2>Excluir conta</h2>
-      </div>
-
-      <div class="modal-body">
-        <p>
-          Tem certeza que deseja excluir sua conta? Esta ação é
-          <strong>irreversível</strong> e todos os seus dados serão
-          permanentemente removidos.
-        </p>
-      </div>
-
-      <div class="modal-actions">
-        <button class="cancel-button" (click)="closeDeleteModal()">
-          Cancelar
-        </button>
-        <button class="confirm-delete-button" (click)="confirmDelete()">
-          Sim, excluir conta
-        </button>
-      </div>
-    </div>
-  </div>
-}
+<app-confirm-modal
+  [show]="showDeleteModal()"
+  title="Excluir conta"
+  message="Tem certeza que deseja excluir sua conta? 
+  Esta ação é irreversível e todos os seus dados serão 
+  permanentemente removidos."
+  confirmText="Sim, excluir conta"
+  cancelText="Cancelar"
+  type="danger"
+  (confirm)="confirmDelete()"
+  (cancel)="closeDeleteModal()"
+/>
