@@ -7,14 +7,7 @@ import {
   CreateVehicleRequest,
   UpdateVehicleRequest,
 } from '../models/vehicle.model';
-
-type PaginatedResponse<T> = {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-};
+import { PaginatedResponse } from '../models/paginated-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class VehicleService {

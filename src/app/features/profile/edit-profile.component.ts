@@ -29,6 +29,7 @@ import { LoadingService } from '../../core/services/loading.service';
 import { User } from '../../core/models/user.model';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
 import { switchMap } from 'rxjs';
+import { ConfirmModalComponent } from '../../shared/components';
 
 @Component({
   selector: 'app-edit-profile',
@@ -38,6 +39,7 @@ import { switchMap } from 'rxjs';
     ReactiveFormsModule,
     AppHeaderComponent,
     NgIconComponent,
+    ConfirmModalComponent,
   ],
   providers: [
     provideIcons({
@@ -146,12 +148,14 @@ export class EditProfileComponent implements OnInit {
       return;
     }
 
-    const { name, email, currentPassword, newPassword, confirmPassword } =
+    const { currentPassword, newPassword, confirmPassword } =
       this.profileForm.value;
 
     if (this.showPasswordFields()) {
       if (!currentPassword) {
-        this.errorMessage.set('Senha atual é obrigatória para alteração de senha');
+        this.errorMessage.set(
+          'Senha atual é obrigatória para alteração de senha',
+        );
         return;
       }
       if (newPassword !== confirmPassword) {
@@ -164,13 +168,22 @@ export class EditProfileComponent implements OnInit {
     this.successMessage.set('');
     this.loadingService.show();
 
-    const updateData: { name: string; email: string; password?: string } = {
-      name,
-      email,
-    };
+    const updateData: { name?: string; email?: string; password?: string } = {};
+
+    const nameCtrl = this.profileForm.get('name');
+    const emailCtrl = this.profileForm.get('email');
+
+    if (nameCtrl?.dirty) updateData.name = nameCtrl.value.trim();
+    if (emailCtrl?.dirty) updateData.email = emailCtrl.value.trim();
 
     if (this.showPasswordFields() && newPassword) {
       updateData.password = newPassword;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      this.loadingService.hide();
+      this.successMessage.set('Nada para atualizar.');
+      return;
     }
 
     this.userService
@@ -186,12 +199,15 @@ export class EditProfileComponent implements OnInit {
             newPassword: '',
             confirmPassword: '',
           });
-          setTimeout(() => this.successMessage.set(''), 5000);
+
+          this.profileForm.markAsPristine();
+          this.profileForm.markAsUntouched();
         },
         error: (error) => {
           this.loadingService.hide();
           this.errorMessage.set(
-            error.error?.message || 'Erro ao atualizar perfil. Tente novamente.',
+            error.error?.message ||
+              'Erro ao atualizar perfil. Tente novamente.',
           );
         },
       });
@@ -245,7 +261,8 @@ export class EditProfileComponent implements OnInit {
         error: (error) => {
           this.loadingService.hide();
           this.errorMessage.set(
-            error.error?.message || 'Erro ao realizar o logout. Tente novamente.',
+            error.error?.message ||
+              'Erro ao realizar o logout. Tente novamente.',
           );
         },
       });

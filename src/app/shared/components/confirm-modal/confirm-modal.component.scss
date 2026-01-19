@@ -1,0 +1,161 @@
+@import '../../../../styles/variables';
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  animation: fadeIn 0.2s;
+  padding: $spacing-xl;
+}
+
+.modal-content {
+  background: white;
+  border-radius: $radius-md;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: $shadow-lg;
+  animation: scaleIn 0.3s;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-xl $spacing-xl $spacing-lg;
+  text-align: center;
+
+  .warning-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $error-bg;
+
+    ng-icon {
+      font-size: 32px;
+      color: $error-primary;
+    }
+  }
+
+  h2 {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $text-dark;
+    margin: 0;
+  }
+}
+
+.modal-body {
+  padding: 0 $spacing-xl $spacing-xl;
+  text-align: center;
+
+  p {
+    font-size: $font-size-base;
+    color: $text-gray-medium;
+    line-height: 1.6;
+    margin: 0;
+
+    strong {
+      color: $text-dark;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: $spacing-md;
+  padding: $spacing-lg $spacing-xl $spacing-xl;
+  border-top: 1px solid $surface-light;
+  background: $slate;
+
+  button {
+    flex: 1;
+    padding: $spacing-md;
+    border: none;
+    border-radius: $radius-sm;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cancel-button {
+    background: white;
+    color: $text-dark;
+    border: 2px solid $surface-light;
+
+    &:hover {
+      background: $slate;
+      border-color: $blue-gray-2;
+    }
+  }
+
+  .confirm-button {
+    background: $error-primary;
+    color: $text-white;
+
+    &:hover {
+      background: darken($error-primary, 10%);
+    }
+
+    &.warning {
+      background: #f59e0b;
+
+      &:hover {
+        background: darken(#f59e0b, 10%);
+      }
+    }
+
+    &.info {
+      background: $red-primary;
+
+      &:hover {
+        background: $dark-red-primary;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .modal-overlay {
+    padding: $spacing-md;
+  }
+
+  .modal-content {
+    max-width: 100%;
+  }
+}
