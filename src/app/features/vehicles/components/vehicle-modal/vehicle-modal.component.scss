@@ -212,21 +212,31 @@
 
   .modal-actions {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: $spacing-md;
     padding: $spacing-xl;
     border-top: 1px solid $surface-light;
     background: $slate;
+
+    .actions-right {
+      display: flex;
+      gap: $spacing-md;
+      margin-left: auto;
+    }
   }
 
   .btn {
-    flex: 1;
-    padding: $spacing-md;
+    padding: $spacing-md $spacing-xl;
     border: none;
     border-radius: $radius-sm;
     font-size: $font-size-base;
     font-weight: $font-weight-bold;
     cursor: pointer;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
 
     &:disabled {
       opacity: 0.6;
@@ -252,6 +262,31 @@
         border-color: $blue-gray-2;
       }
     }
+  }
+}
+
+.delete-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  color: #dc2626;
+  font-size: $font-size-sm;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+
+  ng-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    color: #b91c1c;
+    text-decoration: underline;
   }
 }
 

@@ -23,7 +23,7 @@ export interface Reservation {
 export interface CreateReservationRequest {
   vehicleId: string;
   startDate: string;
-  endDate: string;
+  endDate?: string;
 }
 
 export interface UpdateReservationRequest {

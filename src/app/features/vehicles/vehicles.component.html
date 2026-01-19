@@ -32,7 +32,11 @@
       <h3 class="section-title">Lista de veículos</h3>
       <div class="reservations-grid">
         @for (vehicle of vehiclesWithImage(); track vehicle.id) {
-          <app-vehicle-card [vehicle]="vehicle" />
+          <app-vehicle-card
+            [vehicle]="vehicle"
+            [showEditButton]="true"
+            (editClick)="openEditModal($event)"
+          />
         }
       </div>
 
@@ -52,6 +56,7 @@
   [vehicle]="selectedVehicle()"
   (close)="closeModal()"
   (save)="onSaveVehicle($event)"
+  (delete)="openDeleteModal()"
 />
 
 <app-filter-modal
@@ -61,4 +66,19 @@
   (close)="toggleFilterModal()"
   (apply)="applyFilters($event)"
   (clear)="clearFilters()"
+/>
+
+<app-confirm-modal
+  [show]="showDeleteModal()"
+  [title]="'Excluir veículo'"
+  [message]="
+    'Tem certeza que deseja excluir o veículo <strong>' +
+    (vehicleToDelete()?.name || '') +
+    '</strong>? Esta ação é <strong>irreversível</strong>.'
+  "
+  [confirmText]="'Sim, excluir'"
+  [cancelText]="'Cancelar'"
+  [type]="'danger'"
+  (confirm)="confirmDelete()"
+  (cancel)="closeDeleteModal()"
 />

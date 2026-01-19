@@ -1,0 +1,22 @@
+<div class="reservation-card" (click)="onCardClick()">
+  <div class="car-image">
+    <img
+      *ngIf="reservation.vehicle?.imageUrl"
+      [src]="reservation.vehicle?.imageUrl"
+      [alt]="reservation.vehicle?.name"
+      (error)="onImageError($event)"
+    />
+  </div>
+  <div class="card-details">
+    <h4 class="car-name">
+      {{ reservation.vehicle?.name }} - {{ reservation.vehicle?.year }}
+    </h4>
+    <span class="status-badge" [ngClass]="getStatusClass()">
+      {{ statusLabels[reservation.status] }}
+    </span>
+    <div class="dates">
+      <p><strong>Início:</strong> {{ formatDate(reservation.startDate) }}</p>
+      <p><strong>Fim:</strong> {{ formatDate(reservation.endDate) }}</p>
+    </div>
+  </div>
+</div>

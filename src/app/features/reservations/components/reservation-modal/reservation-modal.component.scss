@@ -1,0 +1,608 @@
+@import '../../../../../styles/variables';
+
+.reservation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl;
+
+  &.show {
+    display: flex;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.2s;
+  }
+
+  .modal-content {
+    position: relative;
+    background: white;
+    border-radius: $radius-md;
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: $shadow-lg;
+    animation: scaleIn 0.3s;
+    overflow: hidden;
+
+    &.wide {
+      max-width: 900px;
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-xl;
+    background: $bg-dark-primary;
+    color: $text-white;
+    border-radius: $radius-md $radius-md 0 0;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+
+      .header-icon {
+        width: 28px;
+        height: 28px;
+        color: $red-primary;
+      }
+
+      h2 {
+        font-size: $font-size-xl;
+        font-weight: $font-weight-bold;
+        margin: 0;
+      }
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: $text-white;
+      cursor: pointer;
+      padding: $spacing-xs;
+      border-radius: $radius-sm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+
+      ng-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: $text-white;
+      cursor: pointer;
+      padding: $spacing-xs;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+
+      ng-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .modal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .filters-section {
+    padding: $spacing-lg;
+    border-bottom: 1px solid $surface-light;
+    background: white;
+
+    .search-input-wrapper {
+      position: relative;
+      margin-bottom: $spacing-md;
+
+      .search-icon {
+        position: absolute;
+        left: $spacing-md;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $text-gray-medium;
+        width: 20px;
+        height: 20px;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 12px $spacing-md 12px 44px;
+        border: 2px solid $surface-light;
+        border-radius: $radius-sm;
+        font-size: $font-size-base;
+        color: $text-dark;
+        background: white;
+        transition: all 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: $red-primary;
+          box-shadow: $shadow-input-focus;
+        }
+
+        &::placeholder {
+          color: $text-gray-medium;
+        }
+      }
+    }
+
+    .filter-selects {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: $spacing-md;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+
+        label {
+          font-size: $font-size-xs;
+          font-weight: $font-weight-semibold;
+          color: $text-gray-medium;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        select {
+          width: 100%;
+          padding: 10px $spacing-md;
+          border: 2px solid $surface-light;
+          border-radius: $radius-sm;
+          font-size: $font-size-sm;
+          color: $text-dark;
+          background: white;
+          cursor: pointer;
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 10px center;
+          background-size: 16px;
+          padding-right: 32px;
+          transition: all 0.2s;
+
+          &:focus {
+            outline: none;
+            border-color: $red-primary;
+          }
+
+          &:hover:not(:focus) {
+            border-color: $blue-gray-2;
+          }
+        }
+      }
+    }
+  }
+
+  .vehicles-grid {
+    flex: 1;
+    padding: $spacing-lg;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: $spacing-md;
+    align-content: start;
+    background: $slate;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $red-primary;
+      border-radius: 4px;
+
+      &:hover {
+        background: $dark-red-primary;
+      }
+    }
+  }
+
+  .vehicle-card {
+    background: white;
+    border: 2px solid $surface-light;
+    border-radius: $radius-md;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $red-primary;
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
+    }
+
+    .vehicle-image {
+      width: 100%;
+      height: 90px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: $spacing-xs;
+      }
+    }
+
+    .vehicle-info {
+      padding: $spacing-sm $spacing-md;
+      background: $slate;
+      border-top: 1px solid $surface-light;
+
+      h4 {
+        font-size: $font-size-xs;
+        font-weight: $font-weight-bold;
+        color: $text-dark;
+        margin: 0;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .loading-state,
+  .empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-2xl;
+    color: $text-gray-medium;
+
+    p {
+      margin: 0;
+    }
+
+    .clear-filters-btn {
+      margin-top: $spacing-md;
+      padding: $spacing-sm $spacing-md;
+      background: $red-primary;
+      color: white;
+      border: none;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      font-size: $font-size-sm;
+
+      &:hover {
+        background: $dark-red-primary;
+      }
+    }
+  }
+
+  .form-sections {
+    flex: 1;
+    padding: $spacing-xl;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $red-primary;
+      border-radius: 4px;
+
+      &:hover {
+        background: $dark-red-primary;
+      }
+    }
+  }
+
+  .form-section {
+    margin-bottom: $spacing-xl;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: $spacing-md;
+      background: $slate;
+      border-radius: $radius-sm;
+      margin-bottom: $spacing-md;
+
+      h3 {
+        font-size: $font-size-base;
+        font-weight: $font-weight-semibold;
+        color: $text-dark;
+        margin: 0;
+      }
+    }
+
+    .form-section-content {
+      padding: 0 $spacing-sm;
+    }
+  }
+
+  .selected-vehicle-card {
+    display: flex;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    background: white;
+    border: 2px solid $surface-light;
+    border-radius: $radius-sm;
+
+    .vehicle-image {
+      width: 140px;
+      height: 100px;
+      background: $slate;
+      border-radius: $radius-sm;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .vehicle-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      h4 {
+        font-size: $font-size-base;
+        font-weight: $font-weight-bold;
+        color: $text-dark;
+        margin: 0 0 $spacing-xs;
+      }
+
+      p {
+        font-size: $font-size-sm;
+        color: $text-gray-medium;
+        margin: 2px 0;
+      }
+    }
+  }
+
+  .form-group {
+    margin-bottom: $spacing-lg;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $text-dark;
+      margin-bottom: $spacing-xs;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px $spacing-md;
+      border: 2px solid $surface-light;
+      border-radius: $radius-sm;
+      font-size: $font-size-base;
+      color: $text-dark;
+      transition: all 0.2s;
+      background: white;
+
+      &:focus {
+        outline: none;
+        border-color: $red-primary;
+        box-shadow: $shadow-input-focus;
+      }
+
+      &:hover:not(:focus) {
+        border-color: $blue-gray-2;
+      }
+    }
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-xl;
+    border-top: 1px solid $surface-light;
+    background: $slate;
+
+    .actions-right {
+      display: flex;
+      gap: $spacing-md;
+    }
+  }
+
+  .btn {
+    padding: $spacing-md $spacing-xl;
+    border: none;
+    border-radius: $radius-sm;
+    font-size: $font-size-base;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &.btn-primary {
+      background: $red-primary;
+      color: $text-white;
+
+      &:hover:not(:disabled) {
+        background: $dark-red-primary;
+      }
+    }
+
+    &.btn-secondary {
+      background: white;
+      color: $text-dark;
+      border: 2px solid $surface-light;
+
+      &:hover {
+        background: $slate;
+        border-color: $blue-gray-2;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .reservation-modal {
+    padding: 0;
+
+    .modal-content {
+      max-width: 100%;
+      max-height: 100vh;
+      border-radius: 0;
+
+      &.wide {
+        max-width: 100%;
+      }
+    }
+
+    .modal-header {
+      border-radius: 0;
+    }
+
+    .filters-section {
+      .filter-selects {
+        grid-template-columns: 1fr;
+
+        .filter-group {
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+
+          label {
+            min-width: 60px;
+          }
+
+          select {
+            flex: 1;
+          }
+        }
+      }
+    }
+
+    .vehicles-grid {
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: $spacing-sm;
+    }
+
+    .vehicle-card {
+      .vehicle-image {
+        height: 70px;
+      }
+
+      .vehicle-info h4 {
+        font-size: 10px;
+      }
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .selected-vehicle-card {
+      flex-direction: column;
+
+      .vehicle-image {
+        width: 100%;
+        height: 140px;
+      }
+    }
+  }
+}

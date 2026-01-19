@@ -31,14 +31,37 @@
     <div class="reservations-section">
       <h3 class="section-title">Últimas reservas</h3>
 
-      <div class="empty-state">
-        <ng-icon name="heroCalendar" />
-        <h3>Nenhuma reserva encontrada</h3>
-        <p>Crie sua primeira reserva clicando no botão acima.</p>
-      </div>
+      @if (isLoading()) {
+        <div class="loading-state">
+          <p>Carregando reservas...</p>
+        </div>
+      } @else if (filteredReservations().length === 0) {
+        <div class="empty-state">
+          <ng-icon name="heroCalendar" />
+          <h3>Nenhuma reserva encontrada</h3>
+          <p>Crie sua primeira reserva clicando no botão acima.</p>
+        </div>
+      } @else {
+        <div class="reservations-grid">
+          @for (reservation of filteredReservations(); track reservation.id) {
+            <app-reservation-card
+              [reservation]="reservation"
+              (cardClick)="openEditModal($event)"
+            />
+          }
+        </div>
+      }
     </div>
   </div>
 </app-main-layout>
+
+<app-reservation-modal
+  [show]="showModal()"
+  [reservation]="selectedReservation()"
+  (close)="closeModal()"
+  (save)="onSaveReservation($event)"
+  (delete)="onDeleteReservation()"
+/>
 
 <app-filter-modal
   [show]="showFilterModal()"
