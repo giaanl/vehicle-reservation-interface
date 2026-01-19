@@ -1,15 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface Vehicle {
-  id?: string;
-  name: string;
-  year: number;
-  type: string;
-  engine: string;
-  size: number;
-  imageUrl?: string;
-}
+import { Vehicle } from '../../../core/models/vehicle.model';
 
 @Component({
   selector: 'app-vehicle-card',

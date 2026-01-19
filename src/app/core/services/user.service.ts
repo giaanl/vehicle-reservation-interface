@@ -25,7 +25,7 @@ export class UserService {
     }
 
     return this.http
-      .patch<User>(`${this.API_URL}/${currentUser.id}`, data)
+      .patch<User>(`${this.API_URL}`, data)
       .pipe(
         tap(() => {
           this.authService.checkAuthStatus();
@@ -40,6 +40,6 @@ export class UserService {
       throw new Error('Usuário não autenticado');
     }
 
-    return this.http.delete<void>(`${this.API_URL}/${currentUser.id}`);
+    return this.http.delete<void>(`${this.API_URL}`);
   }
 }

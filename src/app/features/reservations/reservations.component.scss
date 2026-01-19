@@ -1,0 +1,177 @@
+@import '../../../styles/variables';
+
+.reservations-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+}
+
+.search-section {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  .search-input-wrapper {
+    flex: 1;
+    position: relative;
+
+    .search-icon {
+      position: absolute;
+      left: $spacing-md;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: $red-primary;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px $spacing-md 14px 48px;
+      border: 1px solid $surface-light;
+      border-radius: $radius-sm;
+      font-size: $font-size-base;
+      font-family: inherit;
+      line-height: 1.25;
+      outline: none;
+      transition: all 0.2s;
+
+      &:focus {
+        border-color: $red-primary;
+        box-shadow: $shadow-input-focus;
+      }
+
+      &::placeholder {
+        color: $text-gray-medium;
+      }
+    }
+  }
+
+.filter-button {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: 14px $spacing-lg;
+    background: white;
+    border: 1px solid $surface-light;
+    border-radius: $radius-sm;
+    color: $text-dark;
+    font-weight: $font-weight-medium;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    ng-icon {
+      font-size: 20px;
+      pointer-events: none;
+    }
+
+    &:hover {
+      background: $slate;
+      border-color: $blue-gray-2;
+    }
+  }
+
+  .btn-new {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: 14px $spacing-lg;
+    background: $red-primary;
+    color: $text-white;
+    border: none;
+    border-radius: $radius-sm;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    ng-icon {
+      font-size: 20px;
+      pointer-events: none;
+    }
+
+    &:hover {
+      background: $dark-red-primary;
+    }
+  }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  background: $error-bg;
+  border: 1px solid $error-border;
+  border-radius: 8px;
+  color: $error-primary;
+  margin-bottom: $spacing-xl;
+
+  .dismiss-error {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: $error-primary;
+    padding: 0 $spacing-xs;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.reservations-section {
+  margin-bottom: $spacing-xl;
+
+  .section-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $text-dark;
+    margin-bottom: $spacing-md;
+  }
+
+}
+
+.empty-state {
+  text-align: center;
+  padding: $spacing-3xl;
+  color: $text-gray-medium;
+
+  ng-icon {
+    font-size: 64px;
+    margin-bottom: $spacing-lg;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-dark;
+    margin: 0 0 $spacing-sm;
+  }
+
+  p {
+    font-size: $font-size-base;
+    margin: 0;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .reservations-container {
+    padding: $spacing-md;
+  }
+
+  .search-section {
+    flex-direction: column;
+
+    .filter-button,
+    .btn-new {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+}

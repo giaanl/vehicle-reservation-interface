@@ -1,6 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroMagnifyingGlass,
+  heroXMark,
+  heroChevronRight,
+} from '@ng-icons/heroicons/outline';
 
 export interface FilterValues {
   types: {
@@ -8,31 +14,49 @@ export interface FilterValues {
   };
   engine: string;
   size: number | null;
+  status?: 'all' | 'available' | 'reserved';
 }
 
 @Component({
   selector: 'app-filter-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgIconComponent],
+  providers: [
+    provideIcons({ heroMagnifyingGlass, heroXMark, heroChevronRight }),
+  ],
   templateUrl: './filter-modal.component.html',
   styleUrl: './filter-modal.component.scss',
 })
-export class FilterModalComponent {
+export class FilterModalComponent implements OnChanges {
   @Input() show = false;
   @Input() filters: FilterValues = {
     types: {},
     engine: '',
     size: null,
   };
+  @Input() showStatusFilter = false;
   @Output() close = new EventEmitter<void>();
   @Output() apply = new EventEmitter<FilterValues>();
   @Output() clear = new EventEmitter<void>();
 
+  localFilters: FilterValues = {
+    types: {},
+    engine: '',
+    size: null,
+  };
+
   expandedSections = {
+    status: false,
     types: false,
     engine: false,
     size: false,
   };
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['show'] && changes['show'].currentValue === true) {
+      this.localFilters = JSON.parse(JSON.stringify(this.filters));
+    }
+  }
 
   typeOptions = [
     { key: 'hatchCompact', label: 'Hatch compacto' },
@@ -53,19 +77,29 @@ export class FilterModalComponent {
     { key: 'utility', label: 'Utilitário' },
   ];
 
+  statusOptions: { key: 'all' | 'available' | 'reserved'; label: string }[] = [
+    { key: 'all', label: 'Todos' },
+    { key: 'available', label: 'Disponíveis' },
+    { key: 'reserved', label: 'Reservados' },
+  ];
+
   engineOptions = ['1.0', '1.4', '1.6', '1.8', '2.0'];
   sizeOptions = [2, 3, 4, 5, 6, 7];
 
-  toggleSection(section: 'types' | 'engine' | 'size'): void {
+  toggleSection(section: 'status' | 'types' | 'engine' | 'size'): void {
     this.expandedSections[section] = !this.expandedSections[section];
   }
 
-  selectEngine(engine: string): void {
-    this.filters.engine = this.filters.engine === engine ? '' : engine;
+  selectStatus(status: 'all' | 'available' | 'reserved'): void {
+    this.localFilters.status = this.localFilters.status === status ? 'all' : status;
   }
 
-  selectsizes(size: number): void {
-    this.filters.size = this.filters.size === size ? null : size;
+  selectEngine(engine: string): void {
+    this.localFilters.engine = this.localFilters.engine === engine ? '' : engine;
+  }
+
+  selectSize(size: number): void {
+    this.localFilters.size = this.localFilters.size === size ? null : size;
   }
 
   onClose(): void {
@@ -73,10 +107,16 @@ export class FilterModalComponent {
   }
 
   onApply(): void {
-    this.apply.emit(this.filters);
+    this.apply.emit(JSON.parse(JSON.stringify(this.localFilters)));
   }
 
   onClear(): void {
+    this.localFilters = {
+      types: {},
+      engine: '',
+      size: null,
+      status: 'all',
+    };
     this.clear.emit();
   }
 }

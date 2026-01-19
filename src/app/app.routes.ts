@@ -4,7 +4,7 @@ import { authGuard, noAuthGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/auth/login',
+    redirectTo: '/reservations',
     pathMatch: 'full',
   },
   {
@@ -35,11 +35,19 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'dashboard',
+    path: 'reservations',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/dashboard/dashboard.component').then(
-        (m) => m.DashboardComponent,
+      import('./features/reservations/reservations.component').then(
+        (m) => m.ReservationsComponent,
+      ),
+  },
+  {
+    path: 'vehicles',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/vehicles/vehicles.component').then(
+        (m) => m.VehiclesComponent,
       ),
   },
   {
@@ -57,6 +65,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/auth/login',
+    redirectTo: '/reservations',
   },
 ];

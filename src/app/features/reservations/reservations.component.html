@@ -1,0 +1,47 @@
+<app-main-layout>
+  <div class="reservations-container">
+    <div class="search-section">
+      <div class="search-input-wrapper">
+        <ng-icon name="heroMagnifyingGlass" class="search-icon" />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar reserva"
+          [(ngModel)]="searchQuery"
+        />
+      </div>
+      <button class="filter-button" (click)="toggleFilterModal()">
+        <ng-icon name="heroAdjustmentsHorizontal" />
+        Filtrar
+      </button>
+      <button class="btn-new" (click)="openCreateModal()">
+        <ng-icon name="heroPlus" />
+        Nova Reserva
+      </button>
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+      <button class="dismiss-error" (click)="errorMessage = ''">×</button>
+    </div>
+
+    <div class="reservations-section">
+      <h3 class="section-title">Últimas reservas</h3>
+
+      <div class="empty-state">
+        <ng-icon name="heroCalendar" />
+        <h3>Nenhuma reserva encontrada</h3>
+        <p>Crie sua primeira reserva clicando no botão acima.</p>
+      </div>
+    </div>
+  </div>
+</app-main-layout>
+
+<app-filter-modal
+  [show]="showFilterModal"
+  [filters]="filters"
+  [showStatusFilter]="true"
+  (close)="toggleFilterModal()"
+  (apply)="applyFilters($event)"
+  (clear)="clearFilters()"
+/>

@@ -3,36 +3,11 @@
   <div class="filter-content">
     <div class="filter-header">
       <div class="header-left">
-        <svg
-          class="search-icon-modal"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
+        <ng-icon name="heroMagnifyingGlass" class="search-icon-modal" />
         <h2>Filtros de Busca</h2>
       </div>
       <button class="close-btn" (click)="onClose()">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <ng-icon name="heroXMark" />
       </button>
     </div>
 
@@ -41,31 +16,44 @@
     </div>
 
     <div class="filter-sections">
+      <!-- Seção de Status (apenas para veículos) -->
+      <div class="filter-section" *ngIf="showStatusFilter">
+        <div class="filter-section-header" (click)="toggleSection('status')">
+          <h3>Disponibilidade</h3>
+          <ng-icon
+            name="heroChevronRight"
+            [class.rotated]="expandedSections['status']"
+           />
+        </div>
+        <div class="filter-options" *ngIf="expandedSections['status']">
+          <div class="status-buttons">
+            <button
+              *ngFor="let option of statusOptions"
+              class="status-btn"
+              [class.active]="localFilters.status === option.key"
+              (click)="selectStatus(option.key)"
+            >
+              {{ option.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="filter-section">
         <div class="filter-section-header" (click)="toggleSection('types')">
           <h3>Tipos de carrocerias</h3>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            [class.rotated]="expandedSections.types"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <ng-icon
+            name="heroChevronRight"
+            [class.rotated]="expandedSections['types']"
+           />
         </div>
-        <div class="filter-options" *ngIf="expandedSections.types">
+        <div class="filter-options" *ngIf="expandedSections['types']">
           <div class="filter-grid">
             <label
               class="filter-checkbox"
               *ngFor="let option of typeOptions"
             >
-              <input type="checkbox" [(ngModel)]="filters.types[option.key]" />
+              <input type="checkbox" [(ngModel)]="localFilters.types[option.key]" />
               <span>{{ option.label }}</span>
             </label>
           </div>
@@ -78,27 +66,17 @@
           (click)="toggleSection('engine')"
         >
           <h3>Tipos de motores</h3>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+          <ng-icon
+            name="heroChevronRight"
             [class.rotated]="expandedSections.engine"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+           />
         </div>
         <div class="filter-options" *ngIf="expandedSections.engine">
           <div class="engine-buttons">
             <button
               *ngFor="let engine of engineOptions"
               class="engine-btn"
-              [class.active]="filters.engine === engine"
+              [class.active]="localFilters.engine === engine"
               (click)="selectEngine(engine)"
             >
               Motor {{ engine }}
@@ -110,28 +88,18 @@
       <div class="filter-section">
         <div class="filter-section-header" (click)="toggleSection('size')">
           <h3>Quantidade de lugares</h3>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+          <ng-icon
+            name="heroChevronRight"
             [class.rotated]="expandedSections.size"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+           />
         </div>
         <div class="filter-options" *ngIf="expandedSections.size">
           <div class="size-buttons">
             <button
               *ngFor="let size of sizeOptions"
               class="size-btn"
-              [class.active]="filters.size === size"
-              (click)="selectsizes(size)"
+              [class.active]="localFilters.size === size"
+              (click)="selectSize(size)"
             >
               {{ size < 10 ? '0' + size : size }}
             </button>

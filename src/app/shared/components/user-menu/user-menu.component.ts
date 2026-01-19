@@ -1,10 +1,13 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroUser, heroPencilSquare, heroArrowRightOnRectangle } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-user-menu',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgIconComponent],
+  providers: [provideIcons({ heroUser, heroPencilSquare, heroArrowRightOnRectangle })],
   templateUrl: './user-menu.component.html',
   styleUrl: './user-menu.component.scss',
 })

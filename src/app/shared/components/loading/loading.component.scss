@@ -23,7 +23,7 @@
   width: 60px;
   height: 60px;
   border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #ffffff;
+  border-top: 4px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -39,7 +39,7 @@
 }
 
 .loading-text {
-  color: #ffffff;
+  color: white;
   font-size: 1.1rem;
   font-weight: 500;
   margin: 0;
