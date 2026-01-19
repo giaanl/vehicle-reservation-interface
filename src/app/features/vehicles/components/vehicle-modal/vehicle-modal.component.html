@@ -99,16 +99,24 @@
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="btn btn-secondary" (click)="onClose()">
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="!isFormValid()"
-        >
-          {{ isEditing ? "Salvar Alterações" : "Criar Veículo" }}
-        </button>
+        @if (isEditing) {
+          <a class="delete-link" (click)="onDelete()">
+            <ng-icon name="heroTrash" />
+            Excluir conta
+          </a>
+        }
+        <div class="actions-right">
+          <button type="button" class="btn btn-secondary" (click)="onClose()">
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!isFormValid()"
+          >
+            {{ isEditing ? "Salvar Alterações" : "Criar Veículo" }}
+          </button>
+        </div>
       </div>
     </form>
   </div>

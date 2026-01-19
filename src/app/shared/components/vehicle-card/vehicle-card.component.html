@@ -1,4 +1,9 @@
 <div class="vehicle-card" (click)="onCardClick()">
+  @if (showEditButton) {
+    <button class="edit-button" (click)="onEditClick($event)">
+      <ng-icon name="heroPencil" />
+    </button>
+  }
   <div class="car-image">
     <img
       *ngIf="vehicle.imageUrl"

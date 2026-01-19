@@ -1,0 +1,188 @@
+<div class="reservation-modal" [class.show]="show">
+  <div class="modal-overlay" (click)="onClose()"></div>
+  <div class="modal-content" [class.wide]="currentStep() === 'select-vehicle'">
+    <div class="modal-header">
+      <div class="header-left">
+        @if (currentStep() === "select-dates" && !isEditing) {
+          <button class="back-btn" (click)="goBackToVehicles()">
+            <ng-icon name="heroArrowLeft" />
+          </button>
+        }
+        <ng-icon name="heroCalendar" class="header-icon" />
+        <h2>{{ title }}</h2>
+      </div>
+      <button class="close-btn" (click)="onClose()">
+        <ng-icon name="heroXMark" />
+      </button>
+    </div>
+
+    @if (currentStep() === "select-vehicle") {
+      <div class="modal-body">
+        <div class="filters-section">
+          <div class="search-input-wrapper">
+            <ng-icon name="heroMagnifyingGlass" class="search-icon" />
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Buscar veículo..."
+              [ngModel]="searchQuery()"
+              (ngModelChange)="onSearchChange($event)"
+            />
+          </div>
+          <div class="filter-selects">
+            <div class="filter-group">
+              <label>Tipo</label>
+              <select
+                [ngModel]="filters().type"
+                (ngModelChange)="onFilterChange('type', $event)"
+              >
+                <option value="">Todos</option>
+                <option *ngFor="let type of typeOptions" [value]="type">
+                  {{ type }}
+                </option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Motor</label>
+              <select
+                [ngModel]="filters().engine"
+                (ngModelChange)="onFilterChange('engine', $event)"
+              >
+                <option value="">Todos</option>
+                <option *ngFor="let engine of engineOptions" [value]="engine">
+                  {{ engine }}
+                </option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Lugares</label>
+              <select
+                [ngModel]="filters().size"
+                (ngModelChange)="onSizeFilterChange($event)"
+              >
+                <option [ngValue]="null">Todos</option>
+                <option *ngFor="let size of sizeOptions" [value]="size">
+                  {{ size }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="vehicles-grid">
+          @if (isLoadingVehicles()) {
+            <div class="loading-state">
+              <p>Carregando veículos...</p>
+            </div>
+          } @else if (filteredVehicles().length === 0) {
+            <div class="empty-state">
+              <p>Nenhum veículo encontrado</p>
+              @if (
+                searchQuery() ||
+                filters().engine ||
+                filters().type ||
+                filters().size
+              ) {
+                <button class="clear-filters-btn" (click)="clearFilters()">
+                  Limpar filtros
+                </button>
+              }
+            </div>
+          } @else {
+            @for (vehicle of filteredVehicles(); track vehicle.id) {
+              <div class="vehicle-card" (click)="selectVehicle(vehicle)">
+                <div class="vehicle-image">
+                  @if (vehicle.imageUrl) {
+                    <img [src]="vehicle.imageUrl" [alt]="vehicle.name" />
+                  }
+                </div>
+                <div class="vehicle-info">
+                  <h4>{{ vehicle.name }} - {{ vehicle.year }}</h4>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+
+    @if (currentStep() === "select-dates") {
+      <form class="modal-body" (ngSubmit)="onSubmit()">
+        <div class="form-sections">
+          <div class="form-section">
+            @if (!isEditing) {
+              <div class="form-section-header">
+                <h3>Veículo Selecionado</h3>
+              </div>
+            }
+            <div class="form-section-content">
+              @if (selectedVehicle(); as vehicle) {
+                <div class="selected-vehicle-card">
+                  <div class="vehicle-image">
+                    @if (vehicle.imageUrl) {
+                      <img [src]="vehicle.imageUrl" [alt]="vehicle.name" />
+                    }
+                  </div>
+                  <div class="vehicle-info">
+                    <h4>{{ vehicle.name }} - {{ vehicle.year }}</h4>
+                    <p>{{ vehicle.type }}</p>
+                    <p>
+                      Motor {{ vehicle.engine }} | {{ vehicle.size }} Lugares
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-header">
+              <h3>Período da Reserva</h3>
+            </div>
+            <div class="form-section-content">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="startDate">Data de Início</label>
+                  <input
+                    type="date"
+                    id="startDate"
+                    [(ngModel)]="formData.startDate"
+                    name="startDate"
+                    [min]="minStartDate"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="endDate">Data de Término (Opcional)</label>
+                  <input
+                    type="date"
+                    id="endDate"
+                    [(ngModel)]="formData.endDate"
+                    name="endDate"
+                    [min]="minEndDate"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <div class="actions-right">
+            <button type="button" class="btn btn-secondary" (click)="onClose()">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!isFormValid()"
+            >
+              {{ isEditing ? "Salvar Alterações" : "Criar Reserva" }}
+            </button>
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+</div>

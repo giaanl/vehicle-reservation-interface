@@ -1,6 +1,6 @@
 @import '../../../../styles/variables';
 
-.vehicle-card {
+.reservation-card {
   background: white;
   border: 1px solid $surface-light;
   border-radius: $radius-sm;
@@ -8,46 +8,10 @@
   transition: all 0.2s;
   cursor: pointer;
   box-shadow: $shadow-sm;
-  position: relative;
-
-  .edit-button {
-    position: absolute;
-    top: $spacing-sm;
-    left: $spacing-sm;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: $red-primary;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.2s;
-    z-index: 10;
-    box-shadow: $shadow-md;
-
-    ng-icon {
-      color: $text-white;
-      font-size: 18px;
-    }
-
-    &:hover {
-      background: $dark-red-primary;
-      transform: scale(1.1);
-    }
-  }
 
   &:hover {
     box-shadow: $shadow-md;
     transform: translateY(-2px);
-
-    .edit-button {
-      opacity: 1;
-      transform: scale(1);
-    }
   }
 
   .car-image {
@@ -65,6 +29,8 @@
       height: 100%;
       object-fit: contain;
       padding: $spacing-md;
+      position: relative;
+      z-index: 1;
     }
 
     &::before {
@@ -78,14 +44,9 @@
       background-position: center;
       z-index: 0;
     }
-
-    img {
-      position: relative;
-      z-index: 1;
-    }
   }
 
-  .car-details {
+  .card-details {
     padding: $spacing-md;
 
     .car-name {
@@ -95,10 +56,48 @@
       margin-bottom: $spacing-sm;
     }
 
-    p {
-      font-size: $font-size-sm;
-      color: $text-dark;
-      margin: 4px 0;
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      text-transform: uppercase;
+      margin-bottom: $spacing-sm;
+
+      &.status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      &.status-active {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      &.status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      &.status-completed {
+        background: #e0e7ff;
+        color: #3730a3;
+      }
+    }
+
+    .dates {
+      margin-top: $spacing-sm;
+
+      p {
+        font-size: $font-size-sm;
+        color: $text-dark;
+        margin: 4px 0;
+
+        strong {
+          color: $text-gray-medium;
+        }
+      }
     }
   }
 }

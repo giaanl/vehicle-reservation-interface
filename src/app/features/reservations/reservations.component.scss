@@ -47,7 +47,7 @@
     }
   }
 
-.filter-button {
+  .filter-button {
     display: flex;
     align-items: center;
     gap: $spacing-sm;
@@ -133,6 +133,11 @@
     margin-bottom: $spacing-md;
   }
 
+  .reservations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: $spacing-md;
+  }
 }
 
 .empty-state {

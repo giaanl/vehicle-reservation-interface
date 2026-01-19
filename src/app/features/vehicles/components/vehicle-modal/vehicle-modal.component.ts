@@ -8,7 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroTruck, heroXMark } from '@ng-icons/heroicons/outline';
+import { heroTruck, heroXMark, heroTrash } from '@ng-icons/heroicons/outline';
 import {
   Vehicle,
   CreateVehicleRequest,
@@ -19,7 +19,7 @@ import {
   selector: 'app-vehicle-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, NgIconComponent],
-  providers: [provideIcons({ heroTruck, heroXMark })],
+  providers: [provideIcons({ heroTruck, heroXMark, heroTrash })],
   templateUrl: './vehicle-modal.component.html',
   styleUrl: './vehicle-modal.component.scss',
 })
@@ -30,6 +30,7 @@ export class VehicleModalComponent implements OnChanges {
   @Output() save = new EventEmitter<
     CreateVehicleRequest | UpdateVehicleRequest
   >();
+  @Output() delete = new EventEmitter<void>();
 
   vehicleTypes = [
     'Hatch compacto',
@@ -59,6 +60,8 @@ export class VehicleModalComponent implements OnChanges {
     size: 5,
   };
 
+  private originalData: typeof this.formData | null = null;
+
   get isEditing(): boolean {
     return !!this.vehicle;
   }
@@ -76,6 +79,7 @@ export class VehicleModalComponent implements OnChanges {
         engine: this.vehicle.engine,
         size: this.vehicle.size,
       };
+      this.originalData = { ...this.formData };
     } else {
       this.resetForm();
     }
@@ -89,6 +93,7 @@ export class VehicleModalComponent implements OnChanges {
       engine: '',
       size: 5,
     };
+    this.originalData = null;
   }
 
   onClose(): void {
@@ -99,15 +104,42 @@ export class VehicleModalComponent implements OnChanges {
   onSubmit(): void {
     if (!this.isFormValid()) return;
 
-    const data: CreateVehicleRequest | UpdateVehicleRequest = {
-      name: this.formData.name,
-      year: String(this.formData.year),
-      type: this.formData.type,
-      engine: this.formData.engine,
-      size: String(this.formData.size),
-    };
+    if (this.isEditing && this.originalData) {
+      const updateData: UpdateVehicleRequest = {};
 
-    this.save.emit(data);
+      if (this.formData.name !== this.originalData.name) {
+        updateData.name = this.formData.name;
+      }
+      if (String(this.formData.year) !== String(this.originalData.year)) {
+        updateData.year = String(this.formData.year);
+      }
+      if (this.formData.type !== this.originalData.type) {
+        updateData.type = this.formData.type;
+      }
+      if (this.formData.engine !== this.originalData.engine) {
+        updateData.engine = this.formData.engine;
+      }
+      if (this.formData.size !== this.originalData.size) {
+        updateData.size = String(this.formData.size);
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        this.close.emit();
+        return;
+      }
+
+      this.save.emit(updateData);
+    } else {
+      const createData: CreateVehicleRequest = {
+        name: this.formData.name,
+        year: String(this.formData.year),
+        type: this.formData.type,
+        engine: this.formData.engine,
+        size: String(this.formData.size),
+      };
+
+      this.save.emit(createData);
+    }
   }
 
   isFormValid(): boolean {
@@ -118,5 +150,9 @@ export class VehicleModalComponent implements OnChanges {
       !!this.formData.engine &&
       this.formData.size > 0
     );
+  }
+
+  onDelete(): void {
+    this.delete.emit();
   }
 }

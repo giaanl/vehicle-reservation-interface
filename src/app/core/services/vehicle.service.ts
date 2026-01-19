@@ -14,8 +14,25 @@ export class VehicleService {
   private http = inject(HttpClient);
   private readonly API_URL = `${environment.apiUrl}/vehicles`;
 
-  getAll(): Observable<PaginatedResponse<Vehicle>> {
+  getAll(filters?: {
+    available?: boolean;
+    page?: number;
+    limit?: number;
+  }): Observable<PaginatedResponse<Vehicle>> {
     let params = new HttpParams();
+
+    if (filters?.available !== undefined) {
+      params = params.set('available', String(filters.available));
+    }
+
+    if (filters?.page) {
+      params = params.set('page', filters.page);
+    }
+
+    if (filters?.limit) {
+      params = params.set('limit', filters.limit);
+    }
+
     return this.http.get<PaginatedResponse<Vehicle>>(this.API_URL, { params });
   }
 

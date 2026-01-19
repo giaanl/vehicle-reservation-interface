@@ -23,6 +23,7 @@ import {
   FilterModalComponent,
   FilterValues,
   VehicleCardComponent,
+  ConfirmModalComponent,
 } from '../../shared/components';
 import { VehicleService } from '../../core/services/vehicle.service';
 import { LoadingService } from '../../core/services/loading.service';
@@ -31,6 +32,7 @@ import {
   CreateVehicleRequest,
   UpdateVehicleRequest,
 } from '../../core/models/vehicle.model';
+import { getVehicleImageUrl } from '../../shared/utils/vehicle-image.util';
 
 @Component({
   selector: 'app-vehicles',
@@ -43,6 +45,7 @@ import {
     VehicleModalComponent,
     FilterModalComponent,
     VehicleCardComponent,
+    ConfirmModalComponent,
   ],
   providers: [
     provideIcons({
@@ -64,7 +67,9 @@ export class VehiclesComponent implements OnInit {
   vehicles = signal<Vehicle[]>([]);
   showModal = signal(false);
   showFilterModal = signal(false);
+  showDeleteModal = signal(false);
   selectedVehicle = signal<Vehicle | null>(null);
+  vehicleToDelete = signal<Vehicle | null>(null);
   errorMessage = signal('');
   searchQuery = signal('');
   filters = signal<FilterValues>({
@@ -112,7 +117,7 @@ export class VehiclesComponent implements OnInit {
   vehiclesWithImage = computed(() => {
     return this.filteredVehicles().map((v) => ({
       ...v,
-      imageUrl: this.getVehicleImageUrl(v.name),
+      imageUrl: getVehicleImageUrl(v.name),
     }));
   });
 
@@ -215,9 +220,23 @@ export class VehiclesComponent implements OnInit {
     }
   }
 
-  onDeleteVehicle(vehicle: Vehicle): void {
-    if (!confirm(`Tem certeza que deseja excluir o veículo "${vehicle.name}"?`))
-      return;
+  openDeleteModal(): void {
+    const vehicle = this.selectedVehicle();
+    if (vehicle) {
+      this.vehicleToDelete.set(vehicle);
+      this.showModal.set(false);
+      this.showDeleteModal.set(true);
+    }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal.set(false);
+    this.vehicleToDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const vehicle = this.vehicleToDelete();
+    if (!vehicle) return;
 
     this.loadingService.show();
     this.vehicleService
@@ -225,6 +244,8 @@ export class VehiclesComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
+          this.closeDeleteModal();
+          this.selectedVehicle.set(null);
           this.loadVehicles();
         },
         error: (error) => {
@@ -242,62 +263,6 @@ export class VehiclesComponent implements OnInit {
 
   getStatusClass(status?: string): string {
     return status === 'reserved' ? 'status-reserved' : 'status-available';
-  }
-
-  private readonly availableImages = [
-    'chevrolet_camaro',
-    'fiat_doblo',
-    'fiat_fiorino',
-    'ford_ka',
-    'ford_ka_sedan',
-    'jeep_compass',
-    'mini_cooper',
-    'nissan_versa',
-    'peugeot_partner',
-    'renault_duster',
-    'vw_jetta',
-    'vw_tcross',
-  ];
-
-  private readonly modelToImage: Record<string, string> = {
-    camaro: 'chevrolet_camaro',
-    doblo: 'fiat_doblo',
-    fiorino: 'fiat_fiorino',
-    ka: 'ford_ka',
-    ka_sedan: 'ford_ka_sedan',
-    compass: 'jeep_compass',
-    mini_cooper: 'mini_cooper',
-    versa: 'nissan_versa',
-    partner: 'peugeot_partner',
-    duster: 'renault_duster',
-    jetta: 'vw_jetta',
-    tcross: 'vw_tcross',
-  };
-
-  private normalizeModel(model: string): string {
-    return model
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9\s_-]/g, '')
-      .trim()
-      .replace(/\s+/g, '_');
-  }
-
-  getVehicleImageUrl(modelName: string): string | undefined {
-    const key = this.normalizeModel(modelName);
-
-    const mapped = this.modelToImage[key];
-    if (mapped) return `img/${mapped}.png`;
-
-    const matched = this.availableImages.find(
-      (img) =>
-        img.endsWith(`_${key}`) ||
-        img.includes(`_${key}_`) ||
-        img.includes(key),
-    );
-
-    return matched ? `img/${matched}.png` : undefined;
   }
 
   private getTypeKey(type: string): string {
