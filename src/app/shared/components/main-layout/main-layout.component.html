@@ -1,0 +1,15 @@
+<div class="layout-container">
+  <app-header
+    [userName]="(currentUser$ | async)?.name"
+    (editProfile)="editProfile()"
+    (logout)="logout()"
+  ></app-header>
+
+  <app-sidebar></app-sidebar>
+
+  <main class="main-content">
+    <ng-content></ng-content>
+  </main>
+
+  <app-bottom-nav></app-bottom-nav>
+</div>

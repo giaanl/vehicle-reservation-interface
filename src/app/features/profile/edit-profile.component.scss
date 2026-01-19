@@ -2,7 +2,7 @@
 
 .profile-container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: $light-gray;
   padding-top: 70px;
 }
 
@@ -17,7 +17,7 @@
   align-items: center;
   gap: $spacing-xs;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $surface-light;
   border-radius: $radius-sm;
   padding: $spacing-sm $spacing-md;
   color: $text-dark;
@@ -27,14 +27,14 @@
   transition: all 0.2s;
   margin-bottom: $spacing-xl;
 
-  svg {
+  ng-icon {
     width: 18px;
     height: 18px;
   }
 
   &:hover {
-    background: #f7fafc;
-    border-color: #cbd5e0;
+    background: $slate;
+    border-color: $blue-gray-2;
   }
 }
 
@@ -72,9 +72,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #e2e8f0;
+    border: 3px solid $surface-light;
 
-    svg {
+    ng-icon {
       width: 50px;
       height: 50px;
       color: $text-gray-medium;
@@ -98,7 +98,7 @@
     width: 100%;
     padding: 14px $spacing-md;
     background: white;
-    border: 1px solid #e2e8f0;
+    border: 1px solid $surface-light;
     border-radius: $radius-sm;
     font-size: $font-size-base;
     font-family: $font-family-primary;
@@ -136,7 +136,7 @@
   padding: $spacing-lg;
   background: #f8fafc;
   border-radius: $radius-sm;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $surface-light;
 
   .toggle-password-btn {
     display: flex;
@@ -154,7 +154,7 @@
     transition: all 0.2s;
     text-align: left;
 
-    svg {
+    ng-icon {
       width: 20px;
       height: 20px;
     }
@@ -232,7 +232,7 @@
   transition: all 0.2s;
   text-decoration: none;
 
-  svg {
+  ng-icon {
     width: 18px;
     height: 18px;
   }
@@ -243,7 +243,6 @@
   }
 }
 
-// Modal Styles
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -285,7 +284,7 @@
     align-items: center;
     justify-content: center;
 
-    svg {
+    ng-icon {
       width: 32px;
       height: 32px;
       color: #dc2626;
@@ -338,7 +337,7 @@
     color: $text-dark;
 
     &:hover {
-      background: #e2e8f0;
+      background: $surface-light;
     }
   }
 
@@ -352,7 +351,6 @@
   }
 }
 
-// Animations
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -387,7 +385,6 @@
   }
 }
 
-// Responsive
 @media (max-width: $breakpoint-sm) {
   .main-content {
     padding: $spacing-md;
@@ -406,7 +403,7 @@
       width: 80px;
       height: 80px;
 
-      svg {
+      ng-icon {
         width: 40px;
         height: 40px;
       }

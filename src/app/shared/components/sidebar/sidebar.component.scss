@@ -1,0 +1,61 @@
+@import '../../../../styles/variables';
+
+.sidebar {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  bottom: 0;
+  width: 250px;
+  background: $bg-dark-primary;
+  box-shadow: $shadow-md;
+  z-index: 90;
+  overflow-y: auto;
+
+  @media (max-width: $breakpoint-md) {
+    display: none;
+  }
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: $spacing-md 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-xl;
+  color: $text-gray-light;
+  text-decoration: none;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: $text-white;
+  }
+
+  &.active {
+    background: rgba(198, 29, 53, 0.1);
+    color: $red-primary;
+    border-left-color: $red-primary;
+
+    .nav-icon {
+      color: $red-primary;
+    }
+  }
+}
+
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  white-space: nowrap;
+}

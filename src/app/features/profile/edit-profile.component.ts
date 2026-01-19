@@ -7,6 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroChevronLeft, heroUser, heroKey, heroTrash, heroExclamationTriangle } from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { LoadingService } from '../../core/services/loading.service';
@@ -16,7 +18,8 @@ import { AppHeaderComponent } from '../../shared/components/app-header/app-heade
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, AppHeaderComponent, NgIconComponent],
+  providers: [provideIcons({ heroChevronLeft, heroUser, heroKey, heroTrash, heroExclamationTriangle })],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss',
 })

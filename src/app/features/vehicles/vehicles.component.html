@@ -1,0 +1,60 @@
+<app-main-layout>
+  <div class="vehicles-container">
+    <div class="search-section">
+      <div class="search-input-wrapper">
+        <ng-icon name="heroMagnifyingGlass" class="search-icon" />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar veículo"
+          [(ngModel)]="searchQuery"
+        />
+      </div>
+      <button class="filter-button" (click)="toggleFilterModal()">
+        <ng-icon name="heroAdjustmentsHorizontal" />
+        Filtrar
+      </button>
+      <button class="btn-new" (click)="openCreateModal()">
+        <ng-icon name="heroPlus" />
+        Novo Veículo
+      </button>
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+      <button class="dismiss-error" (click)="errorMessage = ''">×</button>
+    </div>
+
+    <div class="vehicles-section">
+      <h3 class="section-title">Lista de veículos</h3>
+      <div class="reservations-grid">
+        <app-vehicle-card
+          *ngFor="let vehicle of vehiclesWithImage"
+          [vehicle]="vehicle"
+        />
+      </div>
+
+      <div class="empty-state" *ngIf="vehiclesWithImage.length === 0">
+        <ng-icon name="heroTruck" />
+        <h3>Nenhum veículo encontrado</h3>
+        <p>Adicione seu primeiro veículo clicando no botão acima.</p>
+      </div>
+    </div>
+  </div>
+</app-main-layout>
+
+<app-vehicle-modal
+  [show]="showModal"
+  [vehicle]="selectedVehicle"
+  (close)="closeModal()"
+  (save)="onSaveVehicle($event)"
+/>
+
+<app-filter-modal
+  [show]="showFilterModal"
+  [filters]="filters"
+  [showStatusFilter]="true"
+  (close)="toggleFilterModal()"
+  (apply)="applyFilters($event)"
+  (clear)="clearFilters()"
+/>

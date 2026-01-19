@@ -1,0 +1,17 @@
+@import '../../../../styles/variables';
+
+.layout-container {
+  min-height: 100vh;
+  background: $light-gray;
+}
+
+.main-content {
+  padding-top: 70px;
+  padding-left: 250px;
+  min-height: 100vh;
+
+  @media (max-width: $breakpoint-md) {
+    padding-left: 0;
+    padding-bottom: 80px;
+  }
+}
