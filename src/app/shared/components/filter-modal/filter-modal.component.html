@@ -18,7 +18,7 @@
     <div class="filter-sections">
       <div class="filter-section" *ngIf="showStatusFilter">
         <div class="filter-section-header" (click)="toggleSection('status')">
-          <h3>Disponibilidade</h3>
+          <h3>Status da Reserva</h3>
           <ng-icon
             name="heroChevronRight"
             [class.rotated]="expandedSections['status']"
@@ -38,7 +38,29 @@
         </div>
       </div>
 
-      <div class="filter-section">
+      <div class="filter-section" *ngIf="showAvailabilityFilter">
+        <div class="filter-section-header" (click)="toggleSection('status')">
+          <h3>Disponibilidade</h3>
+          <ng-icon
+            name="heroChevronRight"
+            [class.rotated]="expandedSections['status']"
+           />
+        </div>
+        <div class="filter-options" *ngIf="expandedSections['status']">
+          <div class="status-buttons">
+            <button
+              *ngFor="let option of availableOptions"
+              class="status-btn"
+              [class.active]="localFilters.available === option.key"
+              (click)="selectAvailable(option.key)"
+            >
+              {{ option.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-section" *ngIf="showVehicleFilters">
         <div class="filter-section-header" (click)="toggleSection('types')">
           <h3>Tipos de carrocerias</h3>
           <ng-icon
@@ -59,7 +81,7 @@
         </div>
       </div>
 
-      <div class="filter-section">
+      <div class="filter-section" *ngIf="showVehicleFilters">
         <div
           class="filter-section-header"
           (click)="toggleSection('engine')"
@@ -84,7 +106,7 @@
         </div>
       </div>
 
-      <div class="filter-section">
+      <div class="filter-section" *ngIf="showVehicleFilters">
         <div class="filter-section-header" (click)="toggleSection('size')">
           <h3>Quantidade de lugares</h3>
           <ng-icon

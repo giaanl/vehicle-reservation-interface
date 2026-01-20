@@ -17,6 +17,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthContainerComponent } from '../shared/auth-container/auth-container.component';
 import { LoadingService } from '../../../core/services/loading.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private loadingService = inject(LoadingService);
+  private toastService = inject(ToastService);
   private destroyRef = inject(DestroyRef);
 
   loginForm: FormGroup;
@@ -44,7 +46,7 @@ export class LoginComponent {
   constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required]],
     });
   }
 
@@ -75,10 +77,9 @@ export class LoginComponent {
         },
         error: (error) => {
           this.loadingService.hide();
-          this.errorMessage.set(
-            error.error?.message ||
-              'Erro ao fazer login. Verifique suas credenciais.',
-          );
+          const errorMsg = error.error?.message || 'Erro ao fazer login. Verifique suas credenciais.';
+          this.errorMessage.set(errorMsg);
+          this.toastService.error(errorMsg);
         },
       });
   }
@@ -92,11 +93,6 @@ export class LoginComponent {
 
     if (field?.hasError('email')) {
       return 'Email inválido';
-    }
-
-    if (field?.hasError('minlength')) {
-      const minLength = field.errors?.['minlength'].requiredLength;
-      return `Mínimo de ${minLength} caracteres`;
     }
 
     return '';

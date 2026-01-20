@@ -11,6 +11,10 @@ const AVAILABLE_IMAGES = [
   'renault_duster',
   'vw_jetta',
   'vw_tcross',
+  'vw_saveiro',
+  'fiat_strada',
+  'fiat_toro',
+  'chery_tiggo_8',
 ];
 
 const MODEL_TO_IMAGE: Record<string, string> = {
@@ -26,6 +30,10 @@ const MODEL_TO_IMAGE: Record<string, string> = {
   duster: 'renault_duster',
   jetta: 'vw_jetta',
   tcross: 'vw_tcross',
+  saveiro: 'vw_saveiro',
+  strada: 'fiat_strada',
+  toro: 'fiat_toro',
+  tiggo: 'chery_tiggo_8',
 };
 
 function normalizeModel(model: string): string {
@@ -46,9 +54,7 @@ export function getVehicleImageUrl(modelName: string): string | undefined {
 
   const matched = AVAILABLE_IMAGES.find(
     (img) =>
-      img.endsWith(`_${key}`) ||
-      img.includes(`_${key}_`) ||
-      img.includes(key),
+      img.endsWith(`_${key}`) || img.includes(`_${key}_`) || img.includes(key),
   );
 
   return matched ? `img/${matched}.png` : undefined;

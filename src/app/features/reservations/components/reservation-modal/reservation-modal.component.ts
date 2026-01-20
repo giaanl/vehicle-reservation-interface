@@ -17,17 +17,22 @@ import {
   heroXMark,
   heroArrowLeft,
   heroMagnifyingGlass,
+  heroExclamationTriangle,
+  heroCheckCircle,
 } from '@ng-icons/heroicons/outline';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import {
   Reservation,
   CreateReservationRequest,
-  UpdateReservationRequest,
 } from '../../../../core/models/reservation.model';
 import { Vehicle } from '../../../../core/models/vehicle.model';
 import { VehicleService } from '../../../../core/services/vehicle.service';
 import { getVehicleImageUrl } from '../../../../shared/utils/vehicle-image.util';
 
-type ModalStep = 'select-vehicle' | 'select-dates';
+dayjs.extend(utc);
+
+type ModalStep = 'select-vehicle' | 'select-dates' | 'confirmation';
 
 @Component({
   selector: 'app-reservation-modal',
@@ -39,6 +44,8 @@ type ModalStep = 'select-vehicle' | 'select-dates';
       heroXMark,
       heroArrowLeft,
       heroMagnifyingGlass,
+      heroExclamationTriangle,
+      heroCheckCircle,
     }),
   ],
   templateUrl: './reservation-modal.component.html',
@@ -50,9 +57,9 @@ export class ReservationModalComponent implements OnChanges {
   @Input() show = false;
   @Input() reservation: Reservation | null = null;
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<
-    CreateReservationRequest | UpdateReservationRequest
-  >();
+  @Output() save = new EventEmitter<CreateReservationRequest>();
+  @Output() cancel = new EventEmitter<string>();
+  @Output() complete = new EventEmitter<string>();
 
   vehicles = signal<Vehicle[]>([]);
   isLoadingVehicles = signal(false);
@@ -123,41 +130,59 @@ export class ReservationModalComponent implements OnChanges {
     }));
   });
 
-  get isEditing(): boolean {
-    return !!this.reservation;
-  }
-
   get title(): string {
-    if (this.isEditing) return 'Editar Reserva';
+    if (this.currentStep() === 'confirmation') {
+      switch (this.reservation?.status) {
+        case 'PENDING':
+          return 'Cancelar Reserva';
+        case 'ACTIVE':
+          return 'Finalizar Reserva';
+        case 'CANCELLED':
+          return 'Reserva Cancelada';
+        case 'COMPLETED':
+          return 'Reserva Concluída';
+        default:
+          return 'Detalhes da Reserva';
+      }
+    }
     return this.currentStep() === 'select-vehicle'
       ? 'Selecione um Veículo'
       : 'Escolha as Datas';
   }
 
   get minStartDate(): string {
-    return new Date().toISOString().split('T')[0];
+    return dayjs().format('YYYY-MM-DD');
   }
 
   get minEndDate(): string {
-    return this.formData.startDate || this.minStartDate;
+    if (!this.formData.startDate) return '';
+    return dayjs(this.formData.startDate).add(1, 'day').format('YYYY-MM-DD');
+  }
+
+  get isEndDateDisabled(): boolean {
+    return !this.formData.startDate;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['show'] && this.show) {
-      if (this.vehicles().length === 0) {
-        this.loadVehicles();
-      }
+    if (changes['show'] && this.show && !this.reservation) {
+      this.loadVehicles();
     }
 
     if (this.reservation) {
-      this.selectedVehicle.set(this.reservation.vehicle || null);
+      const vehicleWithImage = this.reservation.vehicle
+        ? {
+            ...this.reservation.vehicle,
+            imageUrl: getVehicleImageUrl(this.reservation.vehicle.name),
+          }
+        : null;
+      this.selectedVehicle.set(vehicleWithImage);
       this.formData = {
         startDate: this.formatDateForInput(this.reservation.startDate),
         endDate: this.reservation.endDate
           ? this.formatDateForInput(this.reservation.endDate)
           : '',
       };
-      this.currentStep.set('select-dates');
+      this.currentStep.set('confirmation');
     } else {
       this.resetForm();
     }
@@ -179,7 +204,16 @@ export class ReservationModalComponent implements OnChanges {
 
   private formatDateForInput(date: string): string {
     if (!date) return '';
-    return new Date(date).toISOString().split('T')[0];
+    return date.substring(0, 10);
+  }
+
+  private formatDateForApi(dateString: string): string {
+    return dayjs(dateString).utc().hour(12).minute(0).second(0).toISOString();
+  }
+
+  formatDateForDisplay(dateString: string | undefined | null): string {
+    if (!dateString) return '';
+    return dayjs(dateString).format('DD/MM/YYYY');
   }
 
   resetForm(): void {
@@ -235,8 +269,10 @@ export class ReservationModalComponent implements OnChanges {
 
     const createData: CreateReservationRequest = {
       vehicleId: vehicle.id,
-      startDate: this.formData.startDate,
-      endDate: this.formData.endDate || undefined,
+      startDate: this.formatDateForApi(this.formData.startDate),
+      endDate: this.formData.endDate
+        ? this.formatDateForApi(this.formData.endDate)
+        : undefined,
     };
 
     this.save.emit(createData);
@@ -244,5 +280,17 @@ export class ReservationModalComponent implements OnChanges {
 
   isFormValid(): boolean {
     return !!this.selectedVehicle() && !!this.formData.startDate;
+  }
+
+  onCancelReservation(): void {
+    if (this.reservation) {
+      this.cancel.emit(this.reservation.id);
+    }
+  }
+
+  onCompleteReservation(): void {
+    if (this.reservation) {
+      this.complete.emit(this.reservation.id);
+    }
   }
 }

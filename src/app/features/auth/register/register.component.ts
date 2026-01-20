@@ -12,6 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthContainerComponent } from '../shared/auth-container/auth-container.component';
 import { LoadingService } from '../../../core/services/loading.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -30,6 +31,7 @@ export class RegisterComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private loadingService = inject(LoadingService);
+  private toastService = inject(ToastService);
 
   registerForm: FormGroup;
   errorMessage = '';
@@ -93,12 +95,14 @@ export class RegisterComponent {
     this.authService.register(registerData).subscribe({
       next: () => {
         this.loadingService.hide();
-        this.router.navigate(['/dashboard']);
+        this.toastService.success('Conta criada com sucesso!', 'Bem-vindo');
+        this.router.navigate(['/auth/login']);
       },
       error: (error) => {
         this.loadingService.hide();
-        this.errorMessage =
-          error.error?.message || 'Erro ao criar conta. Tente novamente.';
+        const errorMsg = error.error?.message || 'Erro ao criar conta. Tente novamente.';
+        this.errorMessage = errorMsg;
+        this.toastService.error(errorMsg);
       },
     });
   }

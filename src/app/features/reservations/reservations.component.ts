@@ -24,9 +24,9 @@ import {
 import {
   Reservation,
   CreateReservationRequest,
-  UpdateReservationRequest,
 } from '../../core/models/reservation.model';
 import { ReservationService } from '../../core/services/reservation.service';
+import { ToastService } from '../../core/services/toast.service';
 import { ReservationModalComponent } from './components/reservation-modal/reservation-modal.component';
 
 @Component({
@@ -55,6 +55,7 @@ import { ReservationModalComponent } from './components/reservation-modal/reserv
 })
 export class ReservationsComponent implements OnInit {
   private reservationService = inject(ReservationService);
+  private toastService = inject(ToastService);
 
   reservations = signal<Reservation[]>([]);
   isLoading = signal(false);
@@ -85,18 +86,27 @@ export class ReservationsComponent implements OnInit {
     },
     engine: '',
     size: null,
+    status: null,
   });
 
   filteredReservations = computed(() => {
     const query = this.searchQuery().trim().toLowerCase();
-    if (!query) {
-      return this.reservations();
-    }
-    return this.reservations().filter(
-      (r) =>
-        r.vehicle?.name?.toLowerCase().includes(query) ||
-        r.vehicle?.type?.toLowerCase().includes(query),
-    );
+    const currentFilters = this.filters();
+
+    return this.reservations().filter((r) => {
+      if (query) {
+        const matchesQuery =
+          r.vehicle?.name?.toLowerCase().includes(query) ||
+          r.vehicle?.type?.toLowerCase().includes(query);
+        if (!matchesQuery) return false;
+      }
+
+      if (currentFilters.status && r.status !== currentFilters.status) {
+        return false;
+      }
+
+      return true;
+    });
   });
 
   toggleFilterModal(): void {
@@ -125,6 +135,7 @@ export class ReservationsComponent implements OnInit {
       },
       engine: '',
       size: null,
+      status: null,
     });
   }
 
@@ -161,28 +172,27 @@ export class ReservationsComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: (error) => {
-        this.errorMessage.set('Erro ao carregar reservas');
+        const errorMsg = error.error?.message || 'Erro ao carregar reservas';
+        this.errorMessage.set(errorMsg);
         this.isLoading.set(false);
-        console.error('Erro ao carregar reservas:', error);
+        this.toastService.error(errorMsg);
       },
     });
   }
 
-  onSaveReservation(data: CreateReservationRequest | UpdateReservationRequest): void {
-    if (this.selectedReservation()) {
-      this.closeModal();
-    } else {
-      this.reservationService.create(data as CreateReservationRequest).subscribe({
-        next: () => {
-          this.closeModal();
-          this.loadReservations();
-        },
-        error: (error) => {
-          this.errorMessage.set('Erro ao criar reserva');
-          console.error('Erro ao criar reserva:', error);
-        },
-      });
-    }
+  onSaveReservation(data: CreateReservationRequest): void {
+    this.reservationService.create(data).subscribe({
+      next: () => {
+        this.closeModal();
+        this.loadReservations();
+        this.toastService.success('Reserva criada com sucesso!');
+      },
+      error: (error) => {
+        const errorMsg = error.error?.message || 'Erro ao criar reserva';
+        this.errorMessage.set(errorMsg);
+        this.toastService.error(errorMsg);
+      },
+    });
   }
 
   openEditModal(reservation: Reservation): void {
@@ -190,7 +200,33 @@ export class ReservationsComponent implements OnInit {
     this.showModal.set(true);
   }
 
-  onDeleteReservation(): void {
-    this.closeModal();
+  onCancelReservation(id: string): void {
+    this.reservationService.cancel(id).subscribe({
+      next: () => {
+        this.closeModal();
+        this.loadReservations();
+        this.toastService.success('Reserva cancelada com sucesso!');
+      },
+      error: (error) => {
+        const errorMsg = error.error?.message || 'Erro ao cancelar reserva';
+        this.errorMessage.set(errorMsg);
+        this.toastService.error(errorMsg);
+      },
+    });
+  }
+
+  onCompleteReservation(id: string): void {
+    this.reservationService.complete(id).subscribe({
+      next: () => {
+        this.closeModal();
+        this.loadReservations();
+        this.toastService.success('Reserva finalizada com sucesso!');
+      },
+      error: (error) => {
+        const errorMsg = error.error?.message || 'Erro ao finalizar reserva';
+        this.errorMessage.set(errorMsg);
+        this.toastService.error(errorMsg);
+      },
+    });
   }
 }

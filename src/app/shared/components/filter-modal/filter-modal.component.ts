@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -14,7 +21,8 @@ export interface FilterValues {
   };
   engine: string;
   size: number | null;
-  status?: 'all' | 'available' | 'reserved';
+  available?: boolean | null;
+  status?: string | null;
 }
 
 @Component({
@@ -35,6 +43,8 @@ export class FilterModalComponent implements OnChanges {
     size: null,
   };
   @Input() showStatusFilter = false;
+  @Input() showAvailabilityFilter = false;
+  @Input() showVehicleFilters = true;
   @Output() close = new EventEmitter<void>();
   @Output() apply = new EventEmitter<FilterValues>();
   @Output() clear = new EventEmitter<void>();
@@ -77,10 +87,18 @@ export class FilterModalComponent implements OnChanges {
     { key: 'utility', label: 'Utilitário' },
   ];
 
-  statusOptions: { key: 'all' | 'available' | 'reserved'; label: string }[] = [
-    { key: 'all', label: 'Todos' },
-    { key: 'available', label: 'Disponíveis' },
-    { key: 'reserved', label: 'Reservados' },
+  availableOptions: { key: boolean | null; label: string }[] = [
+    { key: null, label: 'Todos' },
+    { key: true, label: 'Disponíveis' },
+    { key: false, label: 'Reservados' },
+  ];
+
+  statusOptions: { key: string | null; label: string }[] = [
+    { key: null, label: 'Todos' },
+    { key: 'PENDING', label: 'Pendente' },
+    { key: 'ACTIVE', label: 'Ativa' },
+    { key: 'COMPLETED', label: 'Concluída' },
+    { key: 'CANCELLED', label: 'Cancelada' },
   ];
 
   engineOptions = ['1.0', '1.4', '1.6', '1.8', '2.0'];
@@ -90,12 +108,17 @@ export class FilterModalComponent implements OnChanges {
     this.expandedSections[section] = !this.expandedSections[section];
   }
 
-  selectStatus(status: 'all' | 'available' | 'reserved'): void {
-    this.localFilters.status = this.localFilters.status === status ? 'all' : status;
+  selectAvailable(available: boolean | null): void {
+    this.localFilters.available = available;
+  }
+
+  selectStatus(status: string | null): void {
+    this.localFilters.status = status;
   }
 
   selectEngine(engine: string): void {
-    this.localFilters.engine = this.localFilters.engine === engine ? '' : engine;
+    this.localFilters.engine =
+      this.localFilters.engine === engine ? '' : engine;
   }
 
   selectSize(size: number): void {
@@ -115,7 +138,8 @@ export class FilterModalComponent implements OnChanges {
       types: {},
       engine: '',
       size: null,
-      status: 'all',
+      available: null,
+      status: null,
     };
     this.clear.emit();
   }

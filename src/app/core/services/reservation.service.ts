@@ -22,11 +22,11 @@ export class ReservationService {
     return this.http.post<Reservation>(this.API_URL, data);
   }
 
-  update(id: string, data: UpdateReservationRequest): Observable<Reservation> {
-    return this.http.patch<Reservation>(`${this.API_URL}/${id}`, data);
+  cancel(id: string): Observable<Reservation> {
+    return this.http.patch<Reservation>(`${this.API_URL}/${id}/cancel`, {});
   }
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
+  complete(id: string): Observable<Reservation> {
+    return this.http.patch<Reservation>(`${this.API_URL}/${id}/complete`, {});
   }
 }
