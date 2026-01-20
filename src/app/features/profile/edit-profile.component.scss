@@ -16,7 +16,7 @@
   display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
-  background: white;
+  background: $text-white;
   border: 1px solid $surface-light;
   border-radius: $radius-sm;
   padding: $spacing-sm $spacing-md;
@@ -39,7 +39,7 @@
 }
 
 .profile-content {
-  background: white;
+  background: $text-white;
   border-radius: $radius-md;
   padding: $spacing-2xl;
   box-shadow: $shadow-sm;
@@ -67,7 +67,7 @@
   .avatar-circle {
     width: 100px;
     height: 100px;
-    background: #f1f5f9;
+    background: $slate;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -97,7 +97,7 @@
   input {
     width: 100%;
     padding: 14px $spacing-md;
-    background: white;
+    background: $text-white;
     border: 1px solid $surface-light;
     border-radius: $radius-sm;
     font-size: $font-size-base;
@@ -134,7 +134,7 @@
   flex-direction: column;
   gap: $spacing-lg;
   padding: $spacing-lg;
-  background: #f8fafc;
+  background: $slate;
   border-radius: $radius-sm;
   border: 1px solid $surface-light;
 
@@ -184,13 +184,13 @@
 }
 
 .success-message {
-  background: #f0fdf4;
-  color: #16a34a;
+  background: $success-bg;
+  color: $success-text;
   padding: $spacing-md;
   border-radius: $radius-sm;
   font-size: $font-size-sm;
   text-align: center;
-  border: 1px solid #bbf7d0;
+  border: 1px solid $success-primary;
 }
 
 .save-button {
@@ -224,7 +224,7 @@
   justify-content: center;
   gap: $spacing-xs;
   padding: $spacing-md;
-  color: #dc2626;
+  color: $danger-primary;
   font-size: $font-size-sm;
   font-family: $font-family-primary;
   font-weight: $font-weight-medium;
@@ -238,7 +238,7 @@
   }
 
   &:hover {
-    color: #b91c1c;
+    color: $danger-dark;
     text-decoration: underline;
   }
 }

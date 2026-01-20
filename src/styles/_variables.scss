@@ -20,6 +20,46 @@ $error-bg: #fff5f5;
 $error-bg-transparent: rgba(201, 42, 42, 0.1);
 $error-border: rgba(201, 42, 42, 0.3);
 
+$status-pending-bg: #fef3c7;
+$status-pending-text: #92400e;
+
+$status-active-bg: #d1fae5;
+$status-active-text: #065f46;
+
+$status-cancelled-bg: #fee2e2;
+$status-cancelled-text: #991b1b;
+
+$status-completed-bg: #e0e7ff;
+$status-completed-text: #3730a3;
+
+$success-primary: #28a745;
+$success-dark: #218838;
+$success-bg: #d4edda;
+$success-text: #155724;
+
+$warning-primary: #ffc107;
+$warning-dark: #e0a800;
+$warning-amber: #f59e0b;
+$warning-amber-dark: #d97706;
+$warning-bg: #fff3cd;
+$warning-text: #856404;
+
+$danger-primary: #dc3545;
+$danger-dark: #c82333;
+$danger-bg: #f8d7da;
+$danger-text: #721c24;
+
+$info-primary: #17a2b8;
+$info-bg: #d1ecf1;
+$info-text: #0c5460;
+
+$scrollbar-track: #f1f1f1;
+
+$overlay-dark: rgba(0, 0, 0, 0.6);
+$overlay-light: rgba(255, 255, 255, 0.1);
+$overlay-light-hover: rgba(255, 255, 255, 0.2);
+$overlay-spinner: rgba(255, 255, 255, 0.3);
+
 $font-family-primary: 'Poppins', Roboto, sans-serif;
 
 $font-size-xs: 0.85rem;

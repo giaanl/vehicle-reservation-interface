@@ -22,13 +22,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: $overlay-dark;
     animation: fadeIn 0.2s;
   }
 
   .modal-content {
     position: relative;
-    background: white;
+    background: $text-white;
     border-radius: $radius-md;
     max-width: 600px;
     width: 100%;
@@ -106,7 +106,7 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: $scrollbar-track;
     }
 
     &::-webkit-scrollbar-thumb {
@@ -172,7 +172,7 @@
       font-size: $font-size-base;
       color: $text-dark;
       transition: all 0.2s;
-      background: white;
+      background: $text-white;
 
       &:focus {
         outline: none;
@@ -253,7 +253,7 @@
     }
 
     &.btn-secondary {
-      background: white;
+      background: $text-white;
       color: $text-dark;
       border: 2px solid $surface-light;
 
@@ -271,7 +271,7 @@
   justify-content: center;
   gap: $spacing-xs;
   padding: $spacing-md;
-  color: #dc2626;
+  color: $danger-primary;
   font-size: $font-size-sm;
   font-family: $font-family-primary;
   font-weight: $font-weight-medium;
@@ -285,7 +285,7 @@
   }
 
   &:hover {
-    color: #b91c1c;
+    color: $danger-dark;
     text-decoration: underline;
   }
 }

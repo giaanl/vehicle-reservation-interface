@@ -22,13 +22,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: $overlay-dark;
     animation: fadeIn 0.2s;
   }
 
   .filter-content {
     position: relative;
-    background: white;
+    background: $text-white;
     border-radius: $radius-md;
     max-width: 600px;
     width: 100%;
@@ -119,7 +119,7 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: white;
+      background: $text-white;
     }
 
     &::-webkit-scrollbar-thumb {
@@ -209,7 +209,7 @@
     .engine-btn,
     .size-btn {
       padding: $spacing-sm $spacing-lg;
-      background: white;
+      background: $text-white;
       border: 2px solid $surface-light;
       border-radius: $radius-sm;
       color: $text-dark;
