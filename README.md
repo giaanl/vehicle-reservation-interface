@@ -7,7 +7,7 @@ Esta aplicação web permite aos usuários gerenciar reservas de veículos e inv
 ## Tecnologias
 
 - **Angular 18.2.0** - Framework principal
-- **TypeScript 5.5.2** - Linguagem de programação
+- **TypeScript** - Linguagem de programação
 - **SCSS** - Pré-processador CSS
 
 ## Funcionalidades
@@ -171,7 +171,7 @@ npm install
 
 4. Inicie o servidor de desenvolvimento:
 ```bash
-ng serve
+npm run start
 ```
 
 5. Acesse `http://localhost:4200`
@@ -180,8 +180,8 @@ ng serve
 
 | Comando | Descrição |
 |---------|-----------|
-| `ng serve` | Inicia o servidor de desenvolvimento |
-| `ng build` | Compila o projeto para produção |
+| `npm run start` | Inicia o servidor de desenvolvimento |
+| `npm run build` | Compila o projeto para produção |
 
 ## Licença
 
