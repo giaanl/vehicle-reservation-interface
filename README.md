@@ -1,27 +1,188 @@
-# VehicleReservationInterface
+# Vehicle Reservation Interface
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
+## Visão Geral
 
-## Development server
+Esta aplicação web permite aos usuários gerenciar reservas de veículos e inventário, com autenticação de usuários, gerenciamento de perfil e administração de veículos.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Tecnologias
 
-## Code scaffolding
+- **Angular 18.2.0** - Framework principal
+- **TypeScript 5.5.2** - Linguagem de programação
+- **SCSS** - Pré-processador CSS
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Funcionalidades
 
-## Build
+### Autenticação
+- Login com email e senha
+- Registro de novos usuários com validação
+- Recuperação de senha
+- Gerenciamento de sessão via cookies
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Reservas
+- Criar reservas com seleção de datas
+- Listar reservas com filtros e busca
+- Cancelar reservas pendentes
+- Completar reservas ativas
+- Status: PENDING, ACTIVE, COMPLETED, CANCELLED
 
-## Running unit tests
+### Veículos
+- Cadastro de novos veículos
+- Listagem com preview de imagens
+- Edição de detalhes (nome, ano, tipo, motor, tamanho)
+- Exclusão de veículos
+- Controle de disponibilidade
+- Filtros por tipo, motor e tamanho
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Perfil de Usuário
+- Edição de dados pessoais
+- Alteração de senha
+- Exclusão de conta
 
-## Running end-to-end tests
+## Estrutura do Projeto
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```
+src/
+├── app/
+│   ├── core/                    # Funcionalidades centrais
+│   │   ├── guards/             # Proteção de rotas (auth, noAuth)
+│   │   ├── interceptors/       # Interceptors HTTP
+│   │   ├── models/             # Modelos de dados
+│   │   └── services/           # Serviços de negócio
+│   ├── features/               # Módulos de funcionalidades
+│   │   ├── auth/               # Autenticação (Login, Registro)
+│   │   ├── reservations/       # Gerenciamento de reservas
+│   │   ├── vehicles/           # Gerenciamento de veículos
+│   │   └── profile/            # Perfil do usuário
+│   ├── shared/                 # Componentes compartilhados
+│   │   ├── components/         # Componentes reutilizáveis
+│   │   └── utils/              # Funções utilitárias
+│   └── app.routes.ts           # Definição de rotas
+├── styles/                     # Variáveis SCSS globais
+└── environments/               # Configurações de ambiente
+public/                         # Assets estáticos (imagens)
+```
 
-## Further help
+## Componentes Principais
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Componente | Descrição |
+|------------|-----------|
+| `MainLayoutComponent` | Layout principal com header, sidebar e navegação |
+| `VehicleCardComponent` | Card de exibição de veículo |
+| `ReservationCardComponent` | Card de exibição de reserva |
+| `FilterModalComponent` | Modal de filtros avançados |
+| `VehicleModalComponent` | Modal de criação/edição de veículo |
+| `ReservationModalComponent` | Wizard de criação de reserva |
+| `ConfirmModalComponent` | Modal de confirmação de ações |
+
+## Serviços
+
+| Serviço | Responsabilidade |
+|---------|------------------|
+| `AuthService` | Autenticação e sessão do usuário |
+| `VehicleService` | Operações CRUD de veículos |
+| `ReservationService` | Operações CRUD de reservas |
+| `UserService` | Gerenciamento de perfil |
+| `ToastService` | Exibição de notificações |
+| `LoadingService` | Estado de carregamento global |
+
+## Modelos de Dados
+
+### User
+```typescript
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  createdAt?: string;
+}
+```
+
+### Vehicle
+```typescript
+interface Vehicle {
+  id: string;
+  name: string;
+  year: string;
+  type: string;
+  engine: string;
+  size: number;
+  available?: boolean;
+  imageUrl?: string;
+}
+```
+
+### Reservation
+```typescript
+interface Reservation {
+  id: string;
+  vehicleId: string;
+  userId: string;
+  startDate: string;
+  endDate: string;
+  status: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+  vehicle?: Vehicle;
+  user?: User;
+}
+```
+
+## API
+
+A aplicação consome uma API REST no endereço `http://localhost:3000`.
+
+### Endpoints
+
+| Recurso | Método | Endpoint |
+|---------|--------|----------|
+| Login | POST | `/auth/login` |
+| Registro | POST | `/auth/register` |
+| Logout | POST | `/auth/logout` |
+| Usuário atual | GET | `/auth/me` |
+| Atualizar usuário | PATCH | `/users` |
+| Deletar usuário | DELETE | `/users` |
+| Listar veículos | GET | `/vehicles` |
+| Criar veículo | POST | `/vehicles` |
+| Atualizar veículo | PATCH | `/vehicles/{id}` |
+| Deletar veículo | DELETE | `/vehicles/{id}` |
+| Listar reservas | GET | `/reservations` |
+| Criar reserva | POST | `/reservations` |
+| Cancelar reserva | PATCH | `/reservations/{id}/cancel` |
+| Completar reserva | PATCH | `/reservations/{id}/complete` |
+
+## Instalação
+
+### Pré-requisitos
+- Node.js 20.19.6
+- npm ou yarn
+
+### Passos
+
+1. Clone o repositório:
+```bash
+git clone <url-do-repositorio>
+cd vehicle-reservation-interface
+```
+
+2. Instale as dependências:
+```bash
+npm install
+```
+
+3. Configure a API backend (certifique-se de que está rodando em `http://localhost:3000`)
+
+4. Inicie o servidor de desenvolvimento:
+```bash
+ng serve
+```
+
+5. Acesse `http://localhost:4200`
+
+## Scripts Disponíveis
+
+| Comando | Descrição |
+|---------|-----------|
+| `ng serve` | Inicia o servidor de desenvolvimento |
+| `ng build` | Compila o projeto para produção |
+
+## Licença
+
+Este projeto está sob a licença MIT.
