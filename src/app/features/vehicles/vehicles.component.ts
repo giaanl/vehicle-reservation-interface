@@ -27,6 +27,7 @@ import {
 } from '../../shared/components';
 import { VehicleService } from '../../core/services/vehicle.service';
 import { LoadingService } from '../../core/services/loading.service';
+import { ToastService } from '../../core/services/toast.service';
 import {
   Vehicle,
   CreateVehicleRequest,
@@ -62,6 +63,7 @@ import { getVehicleImageUrl } from '../../shared/utils/vehicle-image.util';
 export class VehiclesComponent implements OnInit {
   private vehicleService = inject(VehicleService);
   private loadingService = inject(LoadingService);
+  private toastService = inject(ToastService);
   private destroyRef = inject(DestroyRef);
 
   vehicles = signal<Vehicle[]>([]);
@@ -76,7 +78,7 @@ export class VehiclesComponent implements OnInit {
     types: {},
     engine: '',
     size: null,
-    status: 'all',
+    available: null,
   });
 
   filteredVehicles = computed(() => {
@@ -111,6 +113,10 @@ export class VehiclesComponent implements OnInit {
       result = result.filter((v) => v.size === currentFilters.size);
     }
 
+    if (currentFilters.available !== null && currentFilters.available !== undefined) {
+      result = result.filter((v) => v.available === currentFilters.available);
+    }
+
     return result;
   });
 
@@ -136,10 +142,10 @@ export class VehiclesComponent implements OnInit {
           this.loadingService.hide();
         },
         error: (error) => {
-          this.errorMessage.set(
-            error.error?.message || 'Erro ao carregar veículos',
-          );
+          const errorMsg = error.error?.message || 'Erro ao carregar veículos';
+          this.errorMessage.set(errorMsg);
           this.loadingService.hide();
+          this.toastService.error(errorMsg);
         },
       });
   }
@@ -158,7 +164,7 @@ export class VehiclesComponent implements OnInit {
       types: {},
       engine: '',
       size: null,
-      status: 'all',
+      available: null,
     });
   }
 
@@ -193,12 +199,13 @@ export class VehiclesComponent implements OnInit {
           next: () => {
             this.closeModal();
             this.loadVehicles();
+            this.toastService.success('Veículo atualizado com sucesso!');
           },
           error: (error) => {
-            this.errorMessage.set(
-              error.error?.message || 'Erro ao atualizar veículo',
-            );
+            const errorMsg = error.error?.message || 'Erro ao atualizar veículo';
+            this.errorMessage.set(errorMsg);
             this.loadingService.hide();
+            this.toastService.error(errorMsg);
           },
         });
     } else {
@@ -209,12 +216,13 @@ export class VehiclesComponent implements OnInit {
           next: () => {
             this.closeModal();
             this.loadVehicles();
+            this.toastService.success('Veículo criado com sucesso!');
           },
           error: (error) => {
-            this.errorMessage.set(
-              error.error?.message || 'Erro ao criar veículo',
-            );
+            const errorMsg = error.error?.message || 'Erro ao criar veículo';
+            this.errorMessage.set(errorMsg);
             this.loadingService.hide();
+            this.toastService.error(errorMsg);
           },
         });
     }
@@ -247,12 +255,13 @@ export class VehiclesComponent implements OnInit {
           this.closeDeleteModal();
           this.selectedVehicle.set(null);
           this.loadVehicles();
+          this.toastService.success('Veículo excluído com sucesso!');
         },
         error: (error) => {
-          this.errorMessage.set(
-            error.error?.message || 'Erro ao excluir veículo',
-          );
+          const errorMsg = error.error?.message || 'Erro ao excluir veículo';
+          this.errorMessage.set(errorMsg);
           this.loadingService.hide();
+          this.toastService.error(errorMsg);
         },
       });
   }

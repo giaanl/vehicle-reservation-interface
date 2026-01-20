@@ -21,13 +21,6 @@
       </button>
     </div>
 
-    @if (errorMessage()) {
-      <div class="error-message">
-        {{ errorMessage() }}
-        <button class="dismiss-error" (click)="errorMessage.set('')">×</button>
-      </div>
-    }
-
     <div class="vehicles-section">
       <h3 class="section-title">Lista de veículos</h3>
       <div class="reservations-grid">
@@ -62,7 +55,7 @@
 <app-filter-modal
   [show]="showFilterModal()"
   [filters]="filters()"
-  [showStatusFilter]="true"
+  [showAvailabilityFilter]="true"
   (close)="toggleFilterModal()"
   (apply)="applyFilters($event)"
   (clear)="clearFilters()"

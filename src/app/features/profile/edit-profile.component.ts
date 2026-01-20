@@ -26,6 +26,7 @@ import {
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { LoadingService } from '../../core/services/loading.service';
+import { ToastService } from '../../core/services/toast.service';
 import { User } from '../../core/models/user.model';
 import { AppHeaderComponent } from '../../shared/components/app-header/app-header.component';
 import { switchMap } from 'rxjs';
@@ -59,6 +60,7 @@ export class EditProfileComponent implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private loadingService = inject(LoadingService);
+  private toastService = inject(ToastService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
@@ -193,6 +195,7 @@ export class EditProfileComponent implements OnInit {
         next: () => {
           this.loadingService.hide();
           this.successMessage.set('Perfil atualizado com sucesso!');
+          this.toastService.success('Perfil atualizado com sucesso!');
           this.showPasswordFields.set(false);
           this.profileForm.patchValue({
             currentPassword: '',
@@ -205,10 +208,9 @@ export class EditProfileComponent implements OnInit {
         },
         error: (error) => {
           this.loadingService.hide();
-          this.errorMessage.set(
-            error.error?.message ||
-              'Erro ao atualizar perfil. Tente novamente.',
-          );
+          const errorMsg = error.error?.message || 'Erro ao atualizar perfil. Tente novamente.';
+          this.errorMessage.set(errorMsg);
+          this.toastService.error(errorMsg);
         },
       });
   }
@@ -232,13 +234,14 @@ export class EditProfileComponent implements OnInit {
       .subscribe({
         next: () => {
           this.loadingService.hide();
+          this.toastService.success('Conta excluída com sucesso!');
           this.router.navigate(['/auth/login']);
         },
         error: (error) => {
           this.loadingService.hide();
-          this.errorMessage.set(
-            error.error?.message || 'Erro ao excluir conta. Tente novamente.',
-          );
+          const errorMsg = error.error?.message || 'Erro ao excluir conta. Tente novamente.';
+          this.errorMessage.set(errorMsg);
+          this.toastService.error(errorMsg);
           this.closeDeleteModal();
         },
       });
@@ -256,14 +259,14 @@ export class EditProfileComponent implements OnInit {
       .subscribe({
         next: () => {
           this.loadingService.hide();
+          this.toastService.info('Logout realizado com sucesso!');
           this.router.navigate(['/auth/login']);
         },
         error: (error) => {
           this.loadingService.hide();
-          this.errorMessage.set(
-            error.error?.message ||
-              'Erro ao realizar o logout. Tente novamente.',
-          );
+          const errorMsg = error.error?.message || 'Erro ao realizar o logout. Tente novamente.';
+          this.errorMessage.set(errorMsg);
+          this.toastService.error(errorMsg);
         },
       });
   }

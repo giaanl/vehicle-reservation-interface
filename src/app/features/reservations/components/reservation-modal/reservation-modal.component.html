@@ -3,7 +3,7 @@
   <div class="modal-content" [class.wide]="currentStep() === 'select-vehicle'">
     <div class="modal-header">
       <div class="header-left">
-        @if (currentStep() === "select-dates" && !isEditing) {
+        @if (currentStep() === "select-dates") {
           <button class="back-btn" (click)="goBackToVehicles()">
             <ng-icon name="heroArrowLeft" />
           </button>
@@ -110,11 +110,9 @@
       <form class="modal-body" (ngSubmit)="onSubmit()">
         <div class="form-sections">
           <div class="form-section">
-            @if (!isEditing) {
-              <div class="form-section-header">
-                <h3>Veículo Selecionado</h3>
-              </div>
-            }
+            <div class="form-section-header">
+              <h3>Veículo Selecionado</h3>
+            </div>
             <div class="form-section-content">
               @if (selectedVehicle(); as vehicle) {
                 <div class="selected-vehicle-card">
@@ -161,6 +159,7 @@
                     [(ngModel)]="formData.endDate"
                     name="endDate"
                     [min]="minEndDate"
+                    [disabled]="isEndDateDisabled"
                   />
                 </div>
               </div>
@@ -178,11 +177,103 @@
               class="btn btn-primary"
               [disabled]="!isFormValid()"
             >
-              {{ isEditing ? "Salvar Alterações" : "Criar Reserva" }}
+              Criar Reserva
             </button>
           </div>
         </div>
       </form>
+    }
+
+    @if (currentStep() === "confirmation") {
+      <div class="modal-body confirmation-body">
+        <div class="confirmation-content">
+          @if (selectedVehicle(); as vehicle) {
+            <div class="selected-vehicle-card">
+              <div class="vehicle-image">
+                @if (vehicle.imageUrl) {
+                  <img [src]="vehicle.imageUrl" [alt]="vehicle.name" />
+                }
+              </div>
+              <div class="vehicle-info">
+                <h4>{{ vehicle.name }} - {{ vehicle.year }}</h4>
+                <p>{{ vehicle.type }}</p>
+                <p>Motor {{ vehicle.engine }} | {{ vehicle.size }} Lugares</p>
+              </div>
+            </div>
+          }
+
+          <div class="reservation-details">
+            <div class="detail-row">
+              <span class="label">Data de Início:</span>
+              <span class="value">{{ formatDateForDisplay(reservation?.startDate) }}</span>
+            </div>
+            @if (reservation?.endDate) {
+              <div class="detail-row">
+                <span class="label">Data de Término:</span>
+                <span class="value">{{ formatDateForDisplay(reservation?.endDate) }}</span>
+              </div>
+            }
+          </div>
+
+          <div
+            class="confirmation-message"
+            [class.cancel]="reservation?.status === 'PENDING'"
+            [class.complete]="reservation?.status === 'ACTIVE'"
+            [class.cancelled]="reservation?.status === 'CANCELLED'"
+            [class.completed]="reservation?.status === 'COMPLETED'"
+          >
+            @if (reservation?.status === "PENDING") {
+              <ng-icon name="heroExclamationTriangle" class="warning-icon" />
+              <p>
+                Tem certeza que deseja <strong>cancelar</strong> esta reserva?
+              </p>
+              <span class="hint">Esta ação não pode ser desfeita.</span>
+            } @else if (reservation?.status === "ACTIVE") {
+              <ng-icon name="heroCheckCircle" class="success-icon" />
+              <p>Deseja <strong>finalizar</strong> esta reserva?</p>
+              <span class="hint"
+                >O veículo será marcado como disponível novamente.</span
+              >
+            } @else if (reservation?.status === "CANCELLED") {
+              <ng-icon name="heroXMark" class="cancelled-icon" />
+              <p>Esta reserva foi <strong>cancelada</strong>.</p>
+            } @else if (reservation?.status === "COMPLETED") {
+              <ng-icon name="heroCheckCircle" class="completed-icon" />
+              <p>Esta reserva foi <strong>concluída</strong>.</p>
+            }
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <div class="actions-right">
+            <button type="button" class="btn btn-secondary" (click)="onClose()">
+              {{
+                reservation?.status === "CANCELLED" ||
+                reservation?.status === "COMPLETED"
+                  ? "Fechar"
+                  : "Voltar"
+              }}
+            </button>
+            @if (reservation?.status === "PENDING") {
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="onCancelReservation()"
+              >
+                Cancelar Reserva
+              </button>
+            } @else if (reservation?.status === "ACTIVE") {
+              <button
+                type="button"
+                class="btn btn-success"
+                (click)="onCompleteReservation()"
+              >
+                Finalizar Reserva
+              </button>
+            }
+          </div>
+        </div>
+      </div>
     }
   </div>
 </div>

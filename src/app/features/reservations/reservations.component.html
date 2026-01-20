@@ -21,13 +21,6 @@
       </button>
     </div>
 
-    @if (errorMessage()) {
-      <div class="error-message">
-        {{ errorMessage() }}
-        <button class="dismiss-error" (click)="errorMessage.set('')">×</button>
-      </div>
-    }
-
     <div class="reservations-section">
       <h3 class="section-title">Últimas reservas</h3>
 
@@ -60,13 +53,15 @@
   [reservation]="selectedReservation()"
   (close)="closeModal()"
   (save)="onSaveReservation($event)"
-  (delete)="onDeleteReservation()"
+  (cancel)="onCancelReservation($event)"
+  (complete)="onCompleteReservation($event)"
 />
 
 <app-filter-modal
   [show]="showFilterModal()"
   [filters]="filters()"
   [showStatusFilter]="true"
+  [showVehicleFilters]="false"
   (close)="toggleFilterModal()"
   (apply)="applyFilters($event)"
   (clear)="clearFilters()"

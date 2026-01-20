@@ -514,6 +514,141 @@
         border-color: $blue-gray-2;
       }
     }
+
+    &.btn-danger {
+      background: #dc3545;
+      color: $text-white;
+
+      &:hover:not(:disabled) {
+        background: #c82333;
+      }
+    }
+
+    &.btn-success {
+      background: #28a745;
+      color: $text-white;
+
+      &:hover:not(:disabled) {
+        background: #218838;
+      }
+    }
+  }
+
+  .confirmation-body {
+    display: flex;
+    flex-direction: column;
+
+    .confirmation-content {
+      flex: 1;
+      padding: $spacing-xl;
+      overflow-y: auto;
+    }
+  }
+
+  .reservation-details {
+    margin-top: $spacing-lg;
+    padding: $spacing-md;
+    background: $slate;
+    border-radius: $radius-sm;
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: $spacing-xs 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid $surface-light;
+      }
+
+      .label {
+        font-weight: $font-weight-medium;
+        color: $text-gray-medium;
+      }
+
+      .value {
+        font-weight: $font-weight-semibold;
+        color: $text-dark;
+      }
+    }
+  }
+
+  .confirmation-message {
+    margin-top: $spacing-xl;
+    padding: $spacing-lg;
+    border-radius: $radius-sm;
+    text-align: center;
+
+    &.cancel {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+
+      .warning-icon {
+        color: #856404;
+      }
+
+      p strong {
+        color: #dc3545;
+      }
+    }
+
+    &.complete {
+      background: #d4edda;
+      border: 1px solid #28a745;
+
+      .success-icon {
+        color: #155724;
+      }
+
+      p strong {
+        color: #28a745;
+      }
+    }
+
+    &.cancelled {
+      background: #f8d7da;
+      border: 1px solid #dc3545;
+
+      .cancelled-icon {
+        color: #721c24;
+      }
+
+      p strong {
+        color: #dc3545;
+      }
+    }
+
+    &.completed {
+      background: #d1ecf1;
+      border: 1px solid #17a2b8;
+
+      .completed-icon {
+        color: #0c5460;
+      }
+
+      p strong {
+        color: #17a2b8;
+      }
+    }
+
+    .warning-icon,
+    .success-icon,
+    .cancelled-icon,
+    .completed-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: $spacing-md;
+    }
+
+    p {
+      font-size: $font-size-lg;
+      color: $text-dark;
+      margin: 0 0 $spacing-xs;
+    }
+
+    .hint {
+      font-size: $font-size-sm;
+      color: $text-dark;
+    }
   }
 }
 

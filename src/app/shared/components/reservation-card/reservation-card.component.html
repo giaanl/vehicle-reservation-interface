@@ -1,8 +1,8 @@
 <div class="reservation-card" (click)="onCardClick()">
   <div class="car-image">
     <img
-      *ngIf="reservation.vehicle?.imageUrl"
-      [src]="reservation.vehicle?.imageUrl"
+      *ngIf="vehicleImageUrl"
+      [src]="vehicleImageUrl"
       [alt]="reservation.vehicle?.name"
       (error)="onImageError($event)"
     />
