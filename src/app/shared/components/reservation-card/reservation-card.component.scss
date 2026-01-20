@@ -1,7 +1,7 @@
 @import '../../../../styles/variables';
 
 .reservation-card {
-  background: white;
+  background: $text-white;
   border: 1px solid $surface-light;
   border-radius: $radius-sm;
   overflow: hidden;
@@ -17,7 +17,7 @@
   .car-image {
     width: 100%;
     height: 180px;
-    background: white;
+    background: $text-white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,23 +66,23 @@
       margin-bottom: $spacing-sm;
 
       &.status-pending {
-        background: #fef3c7;
-        color: #92400e;
+        background: $status-pending-bg;
+        color: $status-pending-text;
       }
 
       &.status-active {
-        background: #d1fae5;
-        color: #065f46;
+        background: $status-active-bg;
+        color: $status-active-text;
       }
 
       &.status-cancelled {
-        background: #fee2e2;
-        color: #991b1b;
+        background: $status-cancelled-bg;
+        color: $status-cancelled-text;
       }
 
       &.status-completed {
-        background: #e0e7ff;
-        color: #3730a3;
+        background: $status-completed-bg;
+        color: $status-completed-text;
       }
     }
 
